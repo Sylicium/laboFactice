@@ -1,0 +1,23 @@
+{
+  "name": "teacher-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "/application/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "window": {
+    "permissions": [
+      "audio"
+    ],
+    "resizable": false,
+    "toolbar": false,
+    "frame": false,
+    "width": 10000,
+    "height": 10000,
+    "position": "center",
+    "icon": "/application/icon.png"
+  }
+}

@@ -1,3 +1,4 @@
 .env
 /localModules/
 /logs/*
+student-client/nw.dll

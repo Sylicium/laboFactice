@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="focus-outline-visible">
+<head>
+    <title>LaboFactice - Teacher</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./css/basicCss.css">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+
+
+    <div id="mainbox">
+
+        <div id="loadingbox" hidden>
+            <div class="bcss-centerdiv bcss-centercontentdivmiddle">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    
+                    <div class="loading_logo" style="
+                    width:50px;
+                    height:50px;
+                    background-color: white;
+                    padding: 10px;
+                    margin: 5px;
+                    border: 3px solid transparent;
+                    border-top: 3px solid black;
+                    border-radius: 100%;
+                    animation-name: loading_logo;
+                    animation-duration: 1s;
+                    animation-iteration-count: infinite;
+                    animation-timing-function: linear;
+                    "></div>
+                    <h2 id="loadingboxText">Chargement ...</h2>
+                    <button class="bcss-b-prim" onclick="window.location.reload()">Recharger</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="loginbox" hidden>
+            <div class="bcss-centercontentdivmiddle">
+                <div class="login_center_box bcss-centerdiv">
+                    <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
+                    <h1 class="title">LaboFactice</h1>
+                    <input id="login_firstname" class="bcss-input1" placeholder="Prénom">
+                    <input id="login_lastname" class="bcss-input1" placeholder="Nom de famille">
+                    <input id="login_birthday" class="bcss-input1" type="date">
+                    <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="startSession()">Rejoindre la session</button>
+                    <button class="bcss-b-simple-warn" style="margin: 0px auto;margin-top: 10px;">Attendre le début de la session</button>
+                    <div class="buttons">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="application">
+
+            <div class="bandeau" style="display:flex;flex-direction: row;align-items: center;">
+                <h1 class="title" style="margin:0;margin-left: 20px;font-family: cursive;">LaboFactice</h1>
+                <button class="bcss-b-simple-warn callTeacher" style="margin: auto;">Appeller le professeur</button>
+                <button class="bcss-b-simple-danger" onclick="Application.quit()">Quitter</button>
+            </div>
+            <div class="app">
+                <div class="left">
+                    <div class="video">
+                        <video src="./datas/test2.mp4" controls></video>
+                    </div>
+                    <div class="exerciceText">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, dignissimos illo explicabo esse perspiciatis rerum repellat eaque voluptatibus eligendi molestias dolore quibusdam ipsum neque saepe cupiditate nostrum ipsam? Fuga quas quam nobis vero laudantium veritatis vitae odio consequatur fugiat voluptatem exercitationem voluptate illum dolorum obcaecati dolorem tenetur deserunt illo nostrum accusamus, quis maiores. Ea corrupti temporibus accusamus libero facere ut aperiam corporis autem, doloremque eligendi tempora animi ducimus et amet illum nam laboriosam minima velit officia quae inventore. Deleniti fugit neque id dolores adipisci aut, quas nesciunt amet excepturi, eveniet quae. Quas delectus molestias deleniti excepturi sunt tenetur earum saepe. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus ipsum similique, iusto consequatur corrupti placeat libero tempora quo provident quae autem laborum voluptas tenetur labore delectus qui dolore veniam? Repellendus eum laboriosam modi doloribus accusantium vero obcaecati nam. Porro modi laudantium dolor voluptates officiis obcaecati adipisci fugiat deleniti eius error. Consequuntur, molestiae repudiandae, eum nihil fuga veritatis illum sunt molestias tenetur optio asperiores explicabo quaerat commodi! Laboriosam maxime molestiae sunt reprehenderit dolor consequuntur dolore cumque quos fugit beatae, incidunt vel expedita sit vero neque dolores. Sint blanditiis odio accusamus sequi soluta? Atque maiores ducimus sequi sapiente vero. Atque blanditiis libero repellendus ab necessitatibus expedita, vel officiis praesentium magnam tempora est eaque perspiciatis possimus unde quidem consequatur quas reiciendis optio. Reprehenderit saepe officia molestias deleniti error quis quasi aperiam. Suscipit, optio. Excepturi voluptate optio qui maxime voluptas quis, sit earum, repellendus magni praesentium quo? Ipsum minima, laboriosam tenetur, quisquam illo perferendis molestiae iusto hic doloremque aperiam ipsam suscipit explicabo. Praesentium necessitatibus voluptatibus quia, autem dolores ducimus ipsum suscipit eaque accusamus maxime ea possimus, nobis expedita vero cumque nulla quisquam voluptatum, totam aliquid? Earum incidunt iusto cumque consequatur soluta ab, mollitia architecto saepe ullam eaque voluptates neque dolores accusantium delectus dolorem at ducimus placeat odio. Facere, aperiam sapiente esse eligendi perferendis fuga, placeat consequatur sed quos fugiat possimus, quasi reprehenderit nesciunt quibusdam eius. Nisi, recusandae officia. Beatae nostrum aperiam, eum omnis laboriosam aliquid nam odio suscipit quae veritatis esse libero aliquam voluptas tempore, commodi ipsum recusandae provident. Excepturi est voluptatibus minima? Repellendus cum beatae omnis nisi facere quasi fugit esse itaque eligendi explicabo delectus odio inventore qui amet tempora officia modi et dolorem fuga quaerat, ut cupiditate quam. Sapiente ut distinctio minus nesciunt eos esse perferendis. Excepturi officiis non, exercitationem culpa quod corporis repudiandae placeat laboriosam id, aliquam hic voluptatibus architecto! Voluptates! Lorem100
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="informations">
+                        <div class="timer">
+                            <h2>Temps écoulé: <span id="elapsedTime">00:00:00</span></h2>
+                        </div>
+                        <div class="buttons">
+                            <button id="recordButton" class="bcss-b-simple" onclick="Application.toggleRecord()">Commencer l'enregistrement</button>
+                        </div>
+                    </div>
+                    <div id="audioList">
+                        <h1>Liste des enregistrements</h1>
+                        <!--
+                        <div class="audio">
+
+                            <div class="audio-player">
+                                <div class="timeline">
+                                  <div class="progress"></div>
+                                </div>
+                                <div class="controls">
+                                  <div class="play-container">
+                                    <div class="toggle-play play">
+                                  </div>
+                                  </div>
+                                  <div class="time">
+                                    <div class="current">0:00</div>
+                                    <div class="divider">/</div>
+                                    <div class="length"></div>
+                                  </div>
+                                  <div class="name">Music Song</div>
+                                  <div class="volume-container">
+                                    <div class="volume-button">
+                                      <div class="volume icono-volumeMedium"></div>
+                                    </div>
+                                    
+                                    <div class="volume-slider">
+                                      <div class="volume-percentage"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                        -->
+
+
+                        <!--
+                        <div class="audio">
+                            <audio  src="" controls="" autoplay=""></audio>
+                            <button class="bcss-b-simple-danger">Supprimer</button>
+                        </div>
+                        -->
+
+                    </div>
+                    
+                </div>
+
+
+            </div>
+            
+            <h2>Recorder App</h2>
+            <p>
+                <button type="button" id="record" style="background-color: red;">Record</button>
+                <button type="button" id="stopRecord">Stop</button>
+            </p>
+            <p>
+                <audio id="recordedAudio" src="" controls="" autoplay=""></audio>
+                <a id="recordedAudioDownloadButton" href="" download="">Télécharger</a>        
+            </p>
+            
+            <button class="b-prim">Coucou</button>
+            <button class="b-simple">Télécharger</button>
+        </div>
+
+    </div>
+    
+    
+    
+    
+    
+
+    <script src="./scripts/BasicF.js"></script>
+  <script> 
+   
+    function requestMicrophone() {
+        chrome.contentSettings.microphone.set({
+            primaryPattern:"https://webcammictest.com/*", 
+            scope: "regular", 
+            setting: "allow" // set to "ask" to trigger the native permission prompt again
+        });
+        // to query the current state
+        chrome.contentSettings.microphone.get(
+            {primaryUrl:"https://webcammictest.com/*"}, 
+            ({setting}) => console.log(setting)
+        );
+        // or
+        navigator.permissions.query({name: "microphone"})
+        .then(({state}) => { console.log(state); })
+    
+    }
+  </script>
+  
+  <script src="./scripts/index.js"></script>
+</body>
+
+</html>
