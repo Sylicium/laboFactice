@@ -15,9 +15,9 @@
     "resizable": false,
     "toolbar": false,
     "frame": false,
-    "width": 10000,
-    "height": 10000,
+    "width": 1000,
+    "height": 1000,
     "position": "center",
-    "icon": "/application/icon.png"
+    "icon": "/application/LaboFacticeLogo.ico"
   }
 }
