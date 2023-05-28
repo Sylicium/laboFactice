@@ -2,3 +2,4 @@
 /localModules/
 /logs/*
 student-client/nw.dll
+/node_modules/
