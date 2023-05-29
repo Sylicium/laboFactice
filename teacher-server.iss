@@ -4,7 +4,7 @@
 #define MyAppName "LaboFactice"
 #define MyAppVersion "alpha-1.1.0"
 #define MyAppPublisher "Sylicium Corp"
-#define MyAppExeName "LaboFactice Student.exe"
+#define MyAppExeName "LaboFactice Teacher.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -22,7 +22,7 @@ AllowNoIcons=yes
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=C:\Users\33695\Desktop
-OutputBaseFilename=LaboFactice Student
+OutputBaseFilename=LaboFactice Teacher
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -34,8 +34,8 @@ Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\33695\Documents\GitHub\laboFactice\student-client\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\33695\Documents\GitHub\laboFactice\student-client\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\33695\Documents\GitHub\laboFactice\teacher-server\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\33695\Documents\GitHub\laboFactice\teacher-server\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

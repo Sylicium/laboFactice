@@ -38,7 +38,7 @@
         </div>
 
 
-        <div id="loginbox" hidden>
+        <div id="loginbox">
             <div class="bcss-centercontentdivmiddle">
                 <div class="login_center_box bcss-centerdiv">
                     <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
@@ -46,7 +46,6 @@
                     <input id="login_identifiant" class="bcss-input1" placeholder="Identifiant">
                     <input id="login_password" class="bcss-input1" placeholder="Mot de passe" type="password">
                     <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="makeLogin()">Se connecter</button>
-                    <button class="bcss-b-simple-warn" style="margin: 0px auto;margin-top: 10px;">Attendre le début de la session</button>
                     <div class="buttons">
                     </div>
                 </div>
@@ -69,9 +68,9 @@
 
 
 
-        <div id="application">
+        <div id="application" hidden>
 
-            <div class="menu" hidden>
+            <div class="menu">
                 <div class="box">
                     <div class="lessons" onclick="LaboFactice.selectMenu('lessons')">
                         <h2>Modifier les leçons</h2>
@@ -85,7 +84,7 @@
                 </div>
             </div>
 
-            <div class="app">
+            <div class="app" hidden>
                 <div class="lessons">
                     <button class="bcss-b-simple" onclick="LaboFactice.goToMenu()">Menu</button>
                     <div id="lessonList" class="lessonList">
