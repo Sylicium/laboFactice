@@ -5,7 +5,7 @@ var bonjour = require('bonjour')()
 
 const config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
 function saveConfig() {
-    JSON.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
+    fs.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
 }
 
 function openConfigFile() {
@@ -52,21 +52,27 @@ let LoadingPage = {
 }
 
 
-function startSession() {
+function makeLogin() {
 
-    login_firstname = document.getElementById("login_firstname")
-    login_lastname = document.getElementById("login_lastname")
-    login_birthday = document.getElementById("login_birthday")
+    login_identifiant = document.getElementById("login_identifiant")
+    login_password = document.getElementById("login_password")
 
-    if(login_firstname.value =="") return alert("Tous les champs ne sont pas remplis !")
-    if(login_lastname.value =="") return alert("Tous les champs ne sont pas remplis !")
-    if(login_birthday.value =="") return alert("Tous les champs ne sont pas remplis !")
+    if(login_identifiant.value =="") return alert("Tous les champs ne sont pas remplis !")
+    if(login_password.value =="") return alert("Tous les champs ne sont pas remplis !")
 
-    let realDate = login_birthday.value.split("-").reverse().join("/")
 
-    LoadingPage.start(3*1000, 'En attente de la session ...')
+    if(login_identifiant.value != config.teacherLogin.identifiant || login_password.value != config.teacherLogin.password) {
+        return setTimeout(() => {
+            alert("L'identifiant ou le mot de passe est incorrect.")
+        },200)
+    }
+
+    LoadingPage.start('Chargement ...')
+    LaboFactice.startSession()
 
 }
+
+
 function blobToDataURL(blob, callback) {
     var a = new FileReader();
     a.onload = function(e) {callback(e.target.result);}
@@ -102,30 +108,12 @@ let LoadingPageBackground = new new_LoadingPageBackground()
 
 class new_Application {
     constructor() {
-        this.initialized = false
-        this.records = []
-        this.selectedRecordUUID = null
-        this.recordButton = document.getElementById("recordButton")
-        this.currentlyRecording = false;
-        this.startedRecordAt = Date.now()
+        this.initialized = false;
+        this.Bonjour_service = undefined;
         let that = this
-        this.handlerFunction = (stream) => {
-            GLOBAL_.rec = new MediaRecorder(stream);
-            GLOBAL_.rec.ondataavailable = e => {
-              this.TEMP_.audioChunks.push(e.data);
-              if (GLOBAL_.rec.state == "inactive"){
-                let blob = new Blob(this.TEMP_.audioChunks,{type:'audio/mp3'});
-                this.appendNewRecord(blob)
-                //recordedAudioDownloadButton.src = URL.createObjectURL(blob);
-                this.TEMP_.sendData(blob)
-                }
-            }
-        }
-        this.TEMP_ = {
-            sendData: (datas) => {},
-        }
+        this.lessons = []
 
-        function* recordCounter() {
+        function* counter() {
             let c=0
             while(true) {
                 c++
@@ -133,12 +121,7 @@ class new_Application {
             }
         }
 
-        this.recordCounter = recordCounter()
-
-        this.Bonjour_browser_getIpConfig = () => {
-            console.warn("Bonjour browser not defined yet.")
-            return { error: "Bonjour browser not defined yet." }
-        }
+        this.counter = counter()
 
     }
 
@@ -150,27 +133,18 @@ class new_Application {
     }
 
     init() {
+        this.loadLessons()
 
         let randomWaiting = {
             min: 50,
             max: 250
         }
 
-        //let service = bonjour.publish({ name: 'My Web Server', type: 'http', port: 7890 })
-        LoadingPageBackground.appendText(`Initializing Application.`)
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        LoadingPageBackground.appendText(`Starting Bonjour browser...`)
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        let browser = bonjour.findOne({type:"labo"})
-        this.Bonjour_browser = browser
-        this.Bonjour_browser_getIpConfig = () => {
-            return {
-                "name": browser.services[0].name,
-                "type": browser.services[0].type,
-                "ip": browser.services[0].referer.address,
-                "port": browser.services[0].port,
-            }
-        }
+        let service = bonjour.publish({ name: config.bonjourService.name, type: config.bonjourService.type, port: config.bonjourService.port })
+        service.start()
+        this.Bonjour_service = service
+
+        this.SOCKET_IO = _startServer()
 
 
         /*this.startSessionInterval = setInterval(() => {
@@ -178,124 +152,9 @@ class new_Application {
         }, 1000);*/
 
 
-
-
-        LoadingPageBackground.appendText(`  Done.`)
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        LoadingPageBackground.appendText(`  Requesting microphone usage...`)
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        navigator.mediaDevices.getUserMedia({audio:true})
-        .then(stream => {
-            LoadingPageBackground.appendText(`  Microphone usage get.`)
-            this.handlerFunction(stream)
-        }).catch(e => {
-            console.log(e)
-            LoadingPageBackground.appendText(`  Microphone usage cannot be ready. Error: ${e}`)
-            LoadingPageBackground.appendText(`${e.stack.join("\n")}`)
-        })
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        
-        LoadingPageBackground.appendText(`Initializing timer for voice records...`)
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        let recordTimer = document.getElementById("elapsedTime")
-        let recordTimer2 = document.getElementById("elapsedTime2")
-        setInterval(() => {
-            if(this.currentlyRecording) {
-                let new_text = BasicF.formatTime(Date.now() - this.startedRecordAt, "hh:mm:ss")
-                recordTimer.textContent = new_text
-                recordTimer2.textContent = new_text
-            }
-        }, 1000)
-        LoadingPageBackground.appendText(`  Done.`)
-        // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        LoadingPageBackground.appendText(`Ended starting configuration. Now connecting to application.`)
         this.initialized = true
         
-        // await BasicF.sleep(500)
         LoadingPage.stop()
-    }
-
-    clearRecords() {
-        this.records = []
-    }
-
-
-    getRecordByUUID(UUID) {
-        let r = this.records.filter(x => { return x.UUID == UUID})
-        return r.length > 0 ? r[0] : null
-    }
-
-
-    async appendNewRecord(blob) {
-
-        let blobToDataUrl = await new Promise(r => {let a=new FileReader(); a.onload=r; a.readAsDataURL(blob)}).then(e => e.target.result);
-
-        let audioUUID = `student-record-${BasicF.genHex(16)}`
-
-
-        let currentNumber = this.recordCounter.next().value
-
-        this.records.push({
-            UUID: audioUUID,
-            blob: blob,
-            dataURL: blobToDataUrl,
-            number: currentNumber
-        })
-        
-        let audioList = document.getElementById("audioList")
-        let newDivRecordItem = document.createElement("div")
-        newDivRecordItem.id = audioUUID
-        newDivRecordItem.className = "audio"
-
-        let paragraphElem = document.createElement("p")
-        paragraphElem.textContent = currentNumber
-        paragraphElem.style = "padding: 3px;"
-
-
-        let audioElem = document.createElement("audio")
-        audioElem.src = URL.createObjectURL(blob);
-        audioElem.controls=true;
-        audioElem.autoplay=false;
-
-        let selectButtonElem = document.createElement("button")
-        selectButtonElem.className = "bcss-b-simple"
-        selectButtonElem.textContent = "Choisir"
-        selectButtonElem.onclick = (event) => {
-            let recordUUID = event.target.parentElement.id
-            let the_record = LaboFactice.getRecordByUUID(recordUUID)
-            let confirmation = confirm(`Choisir l'enregistrement ${the_record.number} ?`)
-            if(!confirmation) return;
-            let audioList = document.getElementById("audioList")
-            for(let i in [...audioList.children]) {
-                if(!audioList.children[i] || !audioList.children[i].className) continue;
-                audioList.children[i].classList.remove("selected")
-            }
-            event.target.parentElement.classList.add("selected")
-            this.selectedRecordUUID = `${recordUUID}`
-        }
-
-        let deleteButtonElem = document.createElement("button")
-        deleteButtonElem.className = "bcss-b-simple-danger"
-        deleteButtonElem.textContent = "Supprimer"
-        deleteButtonElem.onclick = () => { LaboFactice.deleteAudio(audioUUID) }
-        
-        newDivRecordItem.appendChild(paragraphElem)
-        newDivRecordItem.appendChild(audioElem)
-        newDivRecordItem.appendChild(selectButtonElem)
-        newDivRecordItem.appendChild(deleteButtonElem)
-        audioList.appendChild(newDivRecordItem)
-    }
-
-    deleteAudio(UUID) {
-        let audioElement = document.getElementById(UUID)
-        let dataAudio = this.records.filter(x => { return x.UUID == UUID })[0]
-        let confirmation = confirm(`Voulez vous vraiment supprimer l'audio n°${dataAudio.number} ? (action irréversible)`)
-        if(confirmation) {
-            console.log(`[LaboFactice:deleteAudio()] Audio supprimé:`,dataAudio, audioElement)
-            audioElement.remove()
-            this.records = this.records.filter(x => { return x.UUID != UUID})
-        }
-        if(this.selectedRecordUUID == UUID) this.selectedRecordUUID = null
     }
 
     quit() {
@@ -308,49 +167,119 @@ class new_Application {
         }
     }
 
-
-    toggleRecord() {
-        console.log("[LaboFactice:toggleRecord()] ",this.recordButton)
-        if(this.currentlyRecording) {
-            this.stopRecord()
-        } else {
-            this.startNewRecord()
+    selectMenu(name) {
+        let application_menu = document.getElementById("application").getElementsByClassName("menu")[0]
+        application_menu.hidden = true
+        let application = document.getElementById("application")
+        application.hidden = false
+        let app = application.getElementsByClassName("app")[0]
+        app.hidden = false
+        for(let i in [...app.children]) {
+            if(!app.children[i] || !app.children[i].className ) continue;
+            if(app.children[i].classList.contains(name)) {
+                app.children[i].hidden = false
+            } else {
+                app.children[i].hidden = true
+            }
         }
     }
 
-    startNewRecord() {
-        console.log("[LaboFactice:startNewRecord()] Starting record.")
-        this.currentlyRecording = true;
-        this.recordButton.className = "bcss-b-simple-danger"
-        this.recordButton.textContent = "Arrêter l'enregistrement"
-        this.onclick = "LaboFactice.toggleRecord()"
-        this.TEMP_.audioChunks = [];
-        this.startedRecordAt = Date.now()
-        try {
-            GLOBAL_.rec.start();
-            document.getElementById("elapsedTime_recordingDot").classList.add("active")
-            document.getElementById("currentlyRecordingPopup").hidden = false
-            document.getElementById("elapsedTime").textContent = "00:00:00"
-            document.getElementById("elapsedTime2").textContent = "00:00:00"
-        } catch(e) {
-            alert(`An error occured: ${e}\nSee console for more details.\n\n${!this.initialized ? "Careful ! LaboFactice is not initalized yet !" : ""}`)
+    goToMenu() {
+        let application = document.getElementById("application")
+        let app = application.getElementsByClassName("app")[0]
+        let menu = application.getElementsByClassName("menu")[0]
+        app.hidden = true
+        menu.hidden = false
+    }
+
+
+    loadLessons() {
+        let lessons = JSON.parse(fs.readFileSync("./application/datas/lessons.json","UTF-8"))
+        this.lessons = lessons
+        this.refreshLessonsListDisplay()
+    }
+
+    saveLessons() {
+        fs.writeFileSync(`./application/datas/lessons.json`, JSON.stringify(this.lessons, null, 4))
+    }
+
+
+    openAddLeconPopup() {
+        document.getElementById("addLesson").hidden = false
+    }
+    closeAddLeconPopup() {
+        document.getElementById("addLesson").hidden = true
+    }
+
+    sendAddLesson() {
+
+        let addLesson_lessonName = document.getElementById("addLesson_lessonName")
+        let addLesson_lessonYoutubeLink = document.getElementById("addLesson_lessonYoutubeLink")
+        let addLesson_lessonText = document.getElementById("addLesson_lessonText")
+
+        if(addLesson_lessonName.value =="") return alert("Tous les champs ne sont pas remplis !")
+        if(addLesson_lessonYoutubeLink.value =="") return alert("Tous les champs ne sont pas remplis !")
+        if(addLesson_lessonText.value =="") return alert("Tous les champs ne sont pas remplis !")
+        
+        let newLesson = {
+            UUID: `${BasicF.genHex(6)}`,
+            name: addLesson_lessonName.value,
+            youtubeLink: addLesson_lessonYoutubeLink.value,
+            text: addLesson_lessonText.value,
+        }
+
+        console.log("this.lessons",this.lessons)
+        console.log("newLesson",newLesson)
+        this.lessons.push(newLesson)
+        this.closeAddLeconPopup()
+        this.refreshLessonsListDisplay()
+
+        setTimeout(() => { this.saveLessons() }, 250)
+        
+
+    }
+    removeLessonByUUID(UUID) {
+        let elem = document.getElementById(`lesson-UUID-${UUID}`)
+        elem.remove()
+        this.lessons = this.lessons.filter(x => { return x.UUID != UUID})
+        this.saveLessons()
+        this.refreshLessonsListDisplay()
+    }
+    removeLessonByElement(elem) {
+        let UUID = elem.parentElement.getElementsByClassName("UUID")[0].textContent
+        let confirmation = confirm(`Voulez vous vraiment supprimer la lesson ${UUID} ?`)
+        if(!confirmation) return;
+        this.removeLessonByUUID(UUID)
+    }
+
+    refreshLessonsListDisplay() {
+        let lessonList = document.getElementById("lessonList")
+        lessonList.innerHTML = `<div class="lesson">
+        <div class="UUID">Identifiant</div>
+        <div class="name">Nom de la leçon</div>
+        <div class="youtubeLink">URL d'une vidéo youtube</div>
+        <div class="text">Texte explicatif pour la leçon</div>
+    </div>`
+
+
+
+        
+        for(let i in this.lessons) {
+            let lessonElem = document.createElement("div")
+            lessonElem.className = `lesson`
+            lessonElem.id = `lesson-UUID-${this.lessons[i].UUID}`
+            lessonElem.innerHTML = `
+            <div class="UUID">${this.lessons[i].UUID}</div>
+            <div class="name">${this.lessons[i].name}</div>
+            <div class="youtubeLink"><a target="_BLANK" href="${this.lessons[i].youtubeLink}">${this.lessons[i].youtubeLink}</a></div>
+            <div class="text">${this.lessons[i].text}</div>
+            <button class="bcss-b-simple-danger" onclick='LaboFactice.removeLessonByElement(this)'>Supprimer</button>`
+            lessonList.appendChild(lessonElem)
         }
     }
 
-    stopRecord() {
-        console.log("[LaboFactice:stopRecord()] Stopping record.")
-        this.currentlyRecording = false;
-        this.recordButton.className = "bcss-b-simple"
-        this.recordButton.textContent = "Commencer l'enregistrement"
-        this.onclick = "LaboFactice.toggleRecord()"
-        try {
-            GLOBAL_.rec.stop();
-            document.getElementById("elapsedTime_recordingDot").classList.remove("active")
-            document.getElementById("currentlyRecordingPopup").hidden = true
-        } catch(e) {
-            alert(`An error occured: ${e}\nSee console for more details.\n\n${!this.initialized ? "Careful ! LaboFactice is not initalized yet !" : ""}`)
-        }
-    }
+
+
 }
 
 
@@ -386,3 +315,5 @@ PRODUCTION:
 
 let LaboFactice = new new_Application()
 LaboFactice.init()
+
+

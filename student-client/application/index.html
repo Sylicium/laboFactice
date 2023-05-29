@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="focus-outline-visible" lang="fr">
 <head>
-    <title>LaboFactice - Teacher</title>
+    <title>LaboFactice - Student</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./css/basicCss.css">
     <link rel="stylesheet" href="./css/index.css">
@@ -12,7 +12,7 @@
 
     <div id="mainbox">
 
-        <div id="loadingbox" hidden>
+        <div id="loadingbox">
             <div id="loadingboxCodeBackground" class="code">
             </div>
             <div class="loading_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
@@ -38,15 +38,15 @@
         </div>
 
 
-        <div id="loginbox">
+        <div id="loginbox" hidden>
             <div class="bcss-centercontentdivmiddle">
                 <div class="login_center_box bcss-centerdiv">
                     <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
-                    <h1 class="title">LaboFactice</h1>
+                    <h1 class="title">LaboFactice | Student</h1>
                     <input id="login_firstname" class="bcss-input1" placeholder="Prénom">
                     <input id="login_lastname" class="bcss-input1" placeholder="Nom de famille">
                     <input id="login_birthday" class="bcss-input1" type="date">
-                    <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="startSession()">Rejoindre la session</button>
+                    <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="makeLogin()">Rejoindre la session</button>
                     <button class="bcss-b-simple-warn" style="margin: 0px auto;margin-top: 10px;">Attendre le début de la session</button>
                     <div class="buttons">
                     </div>
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div id="application" hidden>
+        <div id="application">
 
             <div class="bandeau" style="display:flex;flex-direction: row;align-items: center;">
                 <h1 class="title" style="margin:0;margin-left: 20px;font-family: cursive;">LaboFactice</h1>
@@ -134,19 +134,6 @@
 
 
             </div>
-            
-            <h2>Recorder App</h2>
-            <p>
-                <button type="button" id="record" style="background-color: red;">Record</button>
-                <button type="button" id="stopRecord">Stop</button>
-            </p>
-            <p>
-                <audio id="recordedAudio" src="" controls="" autoplay=""></audio>
-                <a id="recordedAudioDownloadButton" href="" download="">Télécharger</a>        
-            </p>
-            
-            <button class="b-prim">Coucou</button>
-            <button class="b-simple">Télécharger</button>
         </div>
 
     </div>
@@ -177,7 +164,9 @@
     }
   </script>
   
+  <script src="./scripts/socketServer.js"></script>
   <script src="./scripts/index.js"></script>
+  
 </body>
 
 </html>

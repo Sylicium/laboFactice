@@ -106,6 +106,7 @@ div.login_center_box .title {
 }
 #loadingbox div.code {
     position: absolute;
+    overflow: auto;
     padding: 5px;
     background-color: black;
     color: green;

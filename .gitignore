@@ -3,3 +3,4 @@
 /logs/*
 student-client/nw.dll
 /node_modules/
+/teacher-server/node_modules/

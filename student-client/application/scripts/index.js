@@ -5,7 +5,7 @@ var bonjour = require('bonjour')()
 
 const config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
 function saveConfig() {
-    JSON.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
+    fs.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
 }
 
 function openConfigFile() {
@@ -26,8 +26,7 @@ function openConfigFile() {
 
 let LoadingPage = {
     start: (text=undefined) => {
-        LoadingPageBackground.clear()
-        LaboFactice.init()
+        //LoadingPageBackground.clear()
         let loadingbox = document.getElementById("loadingbox")
         let loadingboxText = document.getElementById("loadingboxText")
         loadingboxText.textContent = (text == undefined ? "Chargement ..." : text)
@@ -39,7 +38,7 @@ let LoadingPage = {
         loadingbox.hidden = true
     },
     startFor: (msDuration, text=undefined) => {
-        LoadingPageBackground.clear()
+        //LoadingPageBackground.clear()
         LaboFactice.init()
         let loadingbox = document.getElementById("loadingbox")
         let loadingboxText = document.getElementById("loadingboxText")
@@ -52,7 +51,7 @@ let LoadingPage = {
 }
 
 
-function startSession() {
+function makeLogin() {
 
     login_firstname = document.getElementById("login_firstname")
     login_lastname = document.getElementById("login_lastname")
@@ -64,7 +63,8 @@ function startSession() {
 
     let realDate = login_birthday.value.split("-").reverse().join("/")
 
-    LoadingPage.start(3*1000, 'En attente de la session ...')
+    LoadingPageBackground.clear()
+    LoadingPage.start('En attente de la session ...')
 
 }
 function blobToDataURL(blob, callback) {
@@ -89,6 +89,7 @@ class new_LoadingPageBackground {
         let codeElem = document.createElement("p")
         codeElem.textContent = `${text}`
         this.element.appendChild(codeElem)
+        this.element.scrollTop = this.element.scrollHeight;
     }
     appendTextList(textList) {
         for(let i in textList) {
@@ -144,12 +145,13 @@ class new_Application {
 
 
     startSession() {
+        console.log("starting session")
         LoadingPage.stop()
         document.getElementById("loginbox").hidden = true
         document.getElementById("application").hidden = false
     }
 
-    init() {
+    async init() {
 
         let randomWaiting = {
             min: 50,
@@ -161,15 +163,31 @@ class new_Application {
         // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
         LoadingPageBackground.appendText(`Starting Bonjour browser...`)
         // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
-        let browser = bonjour.findOne({type:"labo"})
+        let browser = bonjour.findOne({ type: config.bonjourService.type })
+        await BasicF.sleep(200)
         this.Bonjour_browser = browser
         this.Bonjour_browser_getIpConfig = () => {
+            console.log("browser.services[0]:",browser.services, config.bonjourService.type)
             return {
                 "name": browser.services[0].name,
                 "type": browser.services[0].type,
                 "ip": browser.services[0].referer.address,
                 "port": browser.services[0].port,
+                "hostname": browser.services[0].host
             }
+        }
+        try {
+            this.SOCKET_IO = _startClient(this.Bonjour_browser_getIpConfig())
+        } catch(e) {
+            LoadingPageBackground.appendText(`Crashed while initializing LaboFactice: ${e}`)
+            await BasicF.sleep(500)
+            console.log("Crashed during LaboFactice init()")
+            console.log(e)
+            setTimeout(() => {
+                this.init()
+            }, 1500)
+            LoadingPage.start("En attente de la session ...")
+            return;
         }
 
 
@@ -351,6 +369,34 @@ class new_Application {
             alert(`An error occured: ${e}\nSee console for more details.\n\n${!this.initialized ? "Careful ! LaboFactice is not initalized yet !" : ""}`)
         }
     }
+
+    downloadFromBlob(blob, name = 'file.mp3') {
+        // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
+        const blobUrl = URL.createObjectURL(blob);
+      
+        // Create a link element
+        const link = document.createElement("a");
+      
+        // Set link's href to point to the Blob URL
+        link.href = blobUrl;
+        link.download = name;
+      
+        // Append link to the body
+        document.body.appendChild(link);
+      
+        // Dispatch click event on the link
+        // This is necessary as link.click() does not work on the latest firefox
+        link.dispatchEvent(
+          new MouseEvent('click', { 
+            bubbles: true, 
+            cancelable: true, 
+            view: window 
+          })
+        );
+      
+        // Remove link from body
+        document.body.removeChild(link);
+      }
 }
 
 

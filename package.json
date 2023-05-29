@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bonjour": "^3.5.0"
+    "axios": "^1.4.0",
+    "bonjour": "^3.5.0",
+    "fs": "^0.0.1-security",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1"
   }
 }

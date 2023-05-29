@@ -38,15 +38,14 @@
         </div>
 
 
-        <div id="loginbox">
+        <div id="loginbox" hidden>
             <div class="bcss-centercontentdivmiddle">
                 <div class="login_center_box bcss-centerdiv">
                     <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
-                    <h1 class="title">LaboFactice</h1>
-                    <input id="login_firstname" class="bcss-input1" placeholder="Prénom">
-                    <input id="login_lastname" class="bcss-input1" placeholder="Nom de famille">
-                    <input id="login_birthday" class="bcss-input1" type="date">
-                    <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="startSession()">Rejoindre la session</button>
+                    <h1 class="title">LaboFactice | Teacher</h1>
+                    <input id="login_identifiant" class="bcss-input1" placeholder="Identifiant">
+                    <input id="login_password" class="bcss-input1" placeholder="Mot de passe" type="password">
+                    <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="makeLogin()">Se connecter</button>
                     <button class="bcss-b-simple-warn" style="margin: 0px auto;margin-top: 10px;">Attendre le début de la session</button>
                     <div class="buttons">
                     </div>
@@ -54,99 +53,71 @@
             </div>
         </div>
 
-        
-        <div id="currentlyRecordingPopup" hidden>
-            <div class="box">
-                <h2><span class="dot"></span>Enregistrement en cours... <span id="elapsedTime2">00:00:00</span></h2>
+
+        <div id="addLesson" hidden>
+            <div class="bcss-centercontentdivmiddle">
+                <div class="addLesson_center_box bcss-centerdiv">
+                    <button class="bcss-b-simple-danger" style="margin:0px;" onclick="LaboFactice.closeAddLeconPopup()">Annuler</button>
+                    <h2 class="title">LaboFactice | Ajouter une leçon</h2>
+                    <input id="addLesson_lessonName" class="bcss-input1" placeholder="Nom de la leçon">
+                    <input id="addLesson_lessonYoutubeLink" class="bcss-input1" placeholder="URL de la vidéo youtube">
+                    <textarea id="addLesson_lessonText" class="bcss-textarea1" placeholder="Texte explicatif"></textarea>
+                    <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="LaboFactice.sendAddLesson()">Ajouter</button>
+                </div>
             </div>
         </div>
 
-        <div id="application" hidden>
 
-            <div class="bandeau" style="display:flex;flex-direction: row;align-items: center;">
-                <h1 class="title" style="margin:0;margin-left: 20px;font-family: cursive;">LaboFactice</h1>
-                <button class="bcss-b-simple-warn callTeacher" style="margin: auto;">Appeller le professeur</button>
-                <button class="bcss-b-simple-danger" onclick="LaboFactice.quit()">Quitter</button>
+
+        <div id="application">
+
+            <div class="menu" hidden>
+                <div class="box">
+                    <div class="lessons" onclick="LaboFactice.selectMenu('lessons')">
+                        <h2>Modifier les leçons</h2>
+                    </div>
+                    <div class="startSession" onclick="LaboFactice.selectMenu('startSession')">
+                        <h2>Commencer une session</h2>
+                    </div>
+                    <div class="sessionHistory" onclick="LaboFactice.selectMenu('sessionHistory')">
+                        <h2>Historique des sessions</h2>
+                    </div>
+                </div>
             </div>
+
             <div class="app">
-                <div class="left">
-                    <div class="video">
-                        <video src="./datas/test2.mp4" controls></video>
-                    </div>
-                    <div class="exerciceText">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, dignissimos illo explicabo esse perspiciatis rerum repellat eaque voluptatibus eligendi molestias dolore quibusdam ipsum neque saepe cupiditate nostrum ipsam? Fuga quas quam nobis vero laudantium veritatis vitae odio consequatur fugiat voluptatem exercitationem voluptate illum dolorum obcaecati dolorem tenetur deserunt illo nostrum accusamus, quis maiores. Ea corrupti temporibus accusamus libero facere ut aperiam corporis autem, doloremque eligendi tempora animi ducimus et amet illum nam laboriosam minima velit officia quae inventore. Deleniti fugit neque id dolores adipisci aut, quas nesciunt amet excepturi, eveniet quae. Quas delectus molestias deleniti excepturi sunt tenetur earum saepe. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus ipsum similique, iusto consequatur corrupti placeat libero tempora quo provident quae autem laborum voluptas tenetur labore delectus qui dolore veniam? Repellendus eum laboriosam modi doloribus accusantium vero obcaecati nam. Porro modi laudantium dolor voluptates officiis obcaecati adipisci fugiat deleniti eius error. Consequuntur, molestiae repudiandae, eum nihil fuga veritatis illum sunt molestias tenetur optio asperiores explicabo quaerat commodi! Laboriosam maxime molestiae sunt reprehenderit dolor consequuntur dolore cumque quos fugit beatae, incidunt vel expedita sit vero neque dolores. Sint blanditiis odio accusamus sequi soluta? Atque maiores ducimus sequi sapiente vero. Atque blanditiis libero repellendus ab necessitatibus expedita, vel officiis praesentium magnam tempora est eaque perspiciatis possimus unde quidem consequatur quas reiciendis optio. Reprehenderit saepe officia molestias deleniti error quis quasi aperiam. Suscipit, optio. Excepturi voluptate optio qui maxime voluptas quis, sit earum, repellendus magni praesentium quo? Ipsum minima, laboriosam tenetur, quisquam illo perferendis molestiae iusto hic doloremque aperiam ipsam suscipit explicabo. Praesentium necessitatibus voluptatibus quia, autem dolores ducimus ipsum suscipit eaque accusamus maxime ea possimus, nobis expedita vero cumque nulla quisquam voluptatum, totam aliquid? Earum incidunt iusto cumque consequatur soluta ab, mollitia architecto saepe ullam eaque voluptates neque dolores accusantium delectus dolorem at ducimus placeat odio. Facere, aperiam sapiente esse eligendi perferendis fuga, placeat consequatur sed quos fugiat possimus, quasi reprehenderit nesciunt quibusdam eius. Nisi, recusandae officia. Beatae nostrum aperiam, eum omnis laboriosam aliquid nam odio suscipit quae veritatis esse libero aliquam voluptas tempore, commodi ipsum recusandae provident. Excepturi est voluptatibus minima? Repellendus cum beatae omnis nisi facere quasi fugit esse itaque eligendi explicabo delectus odio inventore qui amet tempora officia modi et dolorem fuga quaerat, ut cupiditate quam. Sapiente ut distinctio minus nesciunt eos esse perferendis. Excepturi officiis non, exercitationem culpa quod corporis repudiandae placeat laboriosam id, aliquam hic voluptatibus architecto! Voluptates! Lorem100
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="informations">
-                        <div class="timer">
-                            <h2><span id="elapsedTime_recordingDot" class="elapsedTime_recordingDotAnimation"></span>Temps écoulé: <span id="elapsedTime">00:00:00</span></h2>
-                        </div>
-                        <div class="buttons">
-                            <button id="recordButton" class="bcss-b-simple" onclick="LaboFactice.toggleRecord()">Commencer l'enregistrement</button>
-                        </div>
-                    </div>
-                    <div id="audioList">
-                        <h1>Liste des enregistrements</h1>
+                <div class="lessons">
+                    <button class="bcss-b-simple" onclick="LaboFactice.goToMenu()">Menu</button>
+                    <div id="lessonList" class="lessonList">
                         <!--
-                        <div class="audio">
-
-                            <div class="audio-player">
-                                <div class="timeline">
-                                  <div class="progress"></div>
-                                </div>
-                                <div class="controls">
-                                  <div class="play-container">
-                                    <div class="toggle-play play">
-                                  </div>
-                                  </div>
-                                  <div class="time">
-                                    <div class="current">0:00</div>
-                                    <div class="divider">/</div>
-                                    <div class="length"></div>
-                                  </div>
-                                  <div class="name">Music Song</div>
-                                  <div class="volume-container">
-                                    <div class="volume-button">
-                                      <div class="volume icono-volumeMedium"></div>
-                                    </div>
-                                    
-                                    <div class="volume-slider">
-                                      <div class="volume-percentage"></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                        </div>
-                        -->
-
-
-                        <!--
-                        <div class="audio">
-                            <audio  src="" controls="" autoplay=""></audio>
+                        <div class="lesson">
+                            <div class="UUID">20539309853</div>
+                            <div class="name">Leçon 1</div>
+                            <div class="youtubeLink"><a href="#">https://youtube.com</a></div>
+                            <div class="text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores vero dolorem et, quia consequatur sunt ducimus accusamus eius quo aliquid? Commodi ratione placeat molestias, obcaecati, expedita fuga fugiat molestiae doloribus aliquid assumenda corrupti consectetur nesciunt deserunt minus? Iusto, nisi ab aperiam beatae nulla soluta laboriosam obcaecati quae? Cumque repellat labore at quidem natus fugiat non odit, vitae eligendi placeat fuga ipsam ducimus, animi, maiores explicabo autem magni corporis perspiciatis? Veritatis minima animi sit sint beatae odio distinctio iure sunt pariatur dolores, quaerat tempore voluptatum architecto quibusdam est harum quisquam cumque et quos nam rerum aliquid tenetur modi? Ad, aut animi.</div>
                             <button class="bcss-b-simple-danger">Supprimer</button>
+                        </div>-->
+                        
+                        <div class="lesson">
+                            <div class="UUID">Identifiant</div>
+                            <div class="name">Nom de la leçon</div>
+                            <div class="youtubeLink"><a href="#">URL d'une vidéo youtube</a></div>
+                            <div class="text">Text explicatif pour la leçon</div>
                         </div>
-                        -->
-
                     </div>
-                    
+                    <div class="buttons">
+                        <button class="bcss-b-simple" onclick="LaboFactice.openAddLeconPopup()">Ajouter une leçon</button>
+                    </div>
                 </div>
-
-
+                <div class="startSession" hidden>
+                    <h2>Commencer une session</h2>
+                </div>
+                <div class="sessionHistory" hidden>
+                    <h2>Historique des sessions</h2>
+                </div>
             </div>
-            
-            <h2>Recorder App</h2>
-            <p>
-                <button type="button" id="record" style="background-color: red;">Record</button>
-                <button type="button" id="stopRecord">Stop</button>
-            </p>
-            <p>
-                <audio id="recordedAudio" src="" controls="" autoplay=""></audio>
-                <a id="recordedAudioDownloadButton" href="" download="">Télécharger</a>        
-            </p>
-            
-            <button class="b-prim">Coucou</button>
-            <button class="b-simple">Télécharger</button>
+
+
         </div>
 
     </div>
@@ -177,6 +148,7 @@
     }
   </script>
   
+  <script src="./scripts/socketServer.js"></script>
   <script src="./scripts/index.js"></script>
 </body>
 

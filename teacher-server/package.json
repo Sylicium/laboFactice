@@ -1,7 +1,6 @@
 {
   "name": "teacher-server",
   "version": "1.0.0",
-  "description": "",
   "main": "/application/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,5 +13,11 @@
     ],
     "position": "center",
     "icon": "/application/LaboFacticeLogo.ico"
+  },
+  "description": "",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.6.1"
   }
 }

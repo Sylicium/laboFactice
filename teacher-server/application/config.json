@@ -1,6 +1,11 @@
 {
     "adminPassword":"prof",
+    "teacherLogin": {
+        "identifiant": "lacompa",
+        "password": "lacompa"
+    },
     "bonjourService": {
+        "name": "LaboFacticeLan",
         "port": 7890,
         "type": "LaboFacticeLanServiceName"
     }
