@@ -148,13 +148,13 @@ div.addLesson_center_box .title {
     transition: 0.3s all;
 }
 
-#application > div.app > div.lessons > div.lessonList {
+#application div.lessonList {
     display: flex;
     flex-direction: column;
     margin: 10px;
 }
 
-#application > div.app > div.lessons > div.lessonList > div.lesson {
+#application div.lessonList > div.lesson {
     /* background-color: aqua; Debug */
     display: flex;
     flex-direction: row;
@@ -164,21 +164,21 @@ div.addLesson_center_box .title {
     border-radius: 5px;
     cursor: pointer;
 }
-#application > div.app > div.lessons > div.lessonList > div.lessonHeader {
+#application div.lessonList > div.lessonHeader {
     font-size: 20px;
     font-weight: bold;
 }
-#application > div.app > div.lessons > div.lessonList > div.lesson:not(.lessonHeader):hover {
+#application div.lessonList > div.lesson:not(.lessonHeader):hover {
     box-shadow: 0px 2px 10px -5px #000a;
     z-index: 90;
 }
 
-#application > div.app > div.lessons > div.lessonList > div.lesson > div.UUID{ width: 200px; min-width: fit-content; }
-#application > div.app > div.lessons > div.lessonList > div.lesson > div.name{ width: 200px; min-width: fit-content; }
-#application > div.app > div.lessons > div.lessonList > div.lesson > div.youtubeLink{ width: 350px; min-width: fit-content; }
-#application > div.app > div.lessons > div.lessonList > div.lesson:not(.lessonHeader) > div.text{ width: max-content; overflow-y: auto; flex: 1; border: 1px solid gray; border-radius: 5px;}
+#application div.lessonList > div.lesson > div.UUID{ width: 200px; min-width: fit-content; }
+#application div.lessonList > div.lesson > div.name{ width: 200px; min-width: fit-content; }
+#application div.lessonList > div.lesson > div.youtubeLink{ width: 350px; min-width: fit-content; }
+#application div.lessonList > div.lesson:not(.lessonHeader) > div.text{ width: max-content; overflow-y: auto; flex: 1; border: 1px solid gray; border-radius: 5px;}
 
-#application > div.app > div.lessons > div.lessonList > div.lesson > div {
+#application div.lessonList > div.lesson > div {
     padding: 3px;
     max-height: 100px;
 }

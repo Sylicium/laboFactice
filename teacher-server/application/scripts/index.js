@@ -1,3 +1,6 @@
+let LaboFactice
+
+window.addEventListener("DOMContentLoaded", () => {
 
 const fs = require("fs")
 const { exec } = require('node:child_process');
@@ -24,7 +27,7 @@ try {
         }
     }
     saveConfig()
-    BasicF.toast({type:"warn", svg:"warn", title: "Echec du chargement du fichier de configuration", description:`L'application n'a pas pu charger le fichier de configuration config.json. Le fichier a été donc été réinitialisé à un état par défaut.`})
+    BasicF.toast({type:"warn", svg:"warn", title: "Echec du chargement du fichier de configuration", content:`L'application n'a pas pu charger le fichier de configuration config.json. Le fichier a été donc été réinitialisé à un état par défaut.`, timeout: 15*1000})
 }
 
 function openConfigFile() {
@@ -87,7 +90,7 @@ function makeLogin() {
     }
 
     LoadingPage.start('Chargement ...')
-    LaboFactice.startSession()
+    LaboFactice.startApp()
 
 }
 
@@ -151,7 +154,7 @@ class new_Application {
     }
 
 
-    startSession() {
+    startApp() {
         LoadingPage.stop()
         document.getElementById("loginbox").hidden = true
         document.getElementById("application").hidden = false
@@ -169,17 +172,13 @@ class new_Application {
         service.start()
         this.Bonjour_service = service
 
-        this.SOCKET_IO = _startServer()
-
-
-        /*this.startSessionInterval = setInterval(() => {
-            if()
-        }, 1000);*/
-
+        // this.SOCKET_IO = _startServer()
 
         this.initialized = true
         
         LoadingPage.stop()
+        ApplicationLoadingToast.remove()
+        BasicF.toast({ type:"success", svg:"success", title: "Chargement terminé", content: `Merci d'utiliser LaboFactice !\nDéveloppé par Sylicium`, autoHide:true, timeout: 5000})
     }
     
     getName() { return this.ApplicationInfos.name}
@@ -209,6 +208,14 @@ class new_Application {
                 app.children[i].hidden = true
             }
         }
+        if(name == "startSession") {
+            this.refreshLessonsListDisplay_byElementID("lessonList_startSession", {
+                btnDelete: false,
+                onclickLesson: (UUID) => {
+                    this.startSession(UUID)
+                }
+            })
+        }
     }
 
     goToMenu() {
@@ -217,6 +224,48 @@ class new_Application {
         let menu = application.getElementsByClassName("menu")[0]
         app.hidden = true
         menu.hidden = false
+    }
+
+    startSession(lessonUUID) {
+        let lesson;
+        try {
+            lesson = this.lessons.filter(x => x.UUID == lessonUUID)[0]
+            if(!lesson) {
+                console.log(`Application.startSession(): lesson list (tried to find ${lessonUUID}):`, JSON.parse(JSON.stringify(this.lessons)))
+                return BasicF.toastError(new Error(`Application.startSession(): Cannot find lesson with ID '${lessonUUID}'.`))
+            }
+        } catch(e) {
+            return BasicF.toastError(e)
+        }
+        console.log(`Starting server/session with lessons data=`,lesson)
+
+        if(this.SOCKET_IO != undefined) {
+            BasicF.toast({
+                type: "error",
+                svg: "error",
+                title: "Serveur socket.io déjà connecté.",
+                content: `Impossible de démarrer le serveur socket.io car il est déjà démarré.`
+            })
+        } else {
+            try {
+                this.SOCKET_IO = _startServer({
+                    lessonDatas: lesson,
+                    port: config.bonjourService.port
+                })
+                BasicF.toast({
+                    type: "success",
+                    svg: "success",
+                    title: "Session démarrée.",
+                    content: `port=${config.bonjourService.port}`,
+                    timeout: 30*1000,
+                })
+            } catch(e) {
+                BasicF.toastError(e)
+            }
+        }
+
+
+        
     }
 
 
@@ -228,7 +277,8 @@ class new_Application {
             this.refreshLessonsListDisplay()
         } catch(e) {
             this.lessons = []
-            BasicF.toast({ type:"warn", svg:"warn", title: "Impossible de charger les leçons", description:`${LaboFactice.getName()} n'as pas pu charger les leçons du fichier ${path}.`})
+            BasicF.toast({ type:"warn", svg:"warn", title: "Impossible de charger les leçons", content:`${LaboFactice.getName()} n'as pas pu charger les leçons du fichier ${path}.\nLe fichier a été vidé puis recréé.`, timeout: 15*1000})
+            this.saveLessons()
             this.refreshLessonsListDisplay()
         }
     }
@@ -289,21 +339,58 @@ class new_Application {
         this.removeLessonByUUID(UUID)
     }
 
-    refreshLessonsListDisplay() {
-        let lessonList = document.getElementById("lessonList")
+
+    refreshLessonsListDisplay_byElementID(elementID=undefined, options={ btnDelete: false,onclickLesson:(lessonElement) =>{} }) {
+        /*
+
+        options: {
+            btnDelete: false,
+            onclickLesson: (lessonElement) => {}
+        }
+        */
+        let lessonList;
+        try {
+            lessonList = elementID == undefined ? null : document.getElementById(`${elementID}`)
+            if(!lessonList) return BasicF.toastError(new Error(`Application.refreshLessonsListDisplay_byElementID(): Element not found with ID: ${elementID}`))
+        } catch(e) {
+            return BasicF.toastError(e)
+        }
+
         lessonList.innerHTML = `<div class="lesson lessonHeader">
         <div class="UUID">Identifiant</div>
         <div class="name">Nom de la leçon</div>
         <div class="youtubeLink">URL d'une vidéo youtube</div>
         <div class="text">Texte explicatif pour la leçon</div>
     </div>`
-
-
-
         
         for(let i in this.lessons) {
             let lessonElem = document.createElement("div")
-            lessonElem.className = `lesson bcss-    noselect`
+            lessonElem.className = `lesson bcss-noselect`
+            lessonElem.onclick = (pointerEvent) => { return options.onclickLesson(this.lessons[i].UUID) }
+            lessonElem.id = `lesson-UUID-${this.lessons[i].UUID}`
+            lessonElem.innerHTML = `
+            <div class="UUID">${this.lessons[i].UUID}</div>
+            <div class="name">${this.lessons[i].name}</div>
+            <div class="youtubeLink"><a target="_BLANK" href="${this.lessons[i].youtubeLink}">${this.lessons[i].youtubeLink}</a></div>
+            <div class="text">${this.lessons[i].text}</div>
+            ${options.btnDelete ? `<button class="bcss-b-simple-danger" onclick='LaboFactice.removeLessonByElement(this)'>Supprimer</button>` : ""}`
+            lessonList.appendChild(lessonElem)
+        }
+    }
+
+    refreshLessonsListDisplay() {
+        let lessonList = document.getElementById("lessonList")
+
+        lessonList.innerHTML = `<div class="lesson lessonHeader">
+        <div class="UUID">Identifiant</div>
+        <div class="name">Nom de la leçon</div>
+        <div class="youtubeLink">URL d'une vidéo youtube</div>
+        <div class="text">Texte explicatif pour la leçon</div>
+    </div>`
+        
+        for(let i in this.lessons) {
+            let lessonElem = document.createElement("div")
+            lessonElem.className = `lesson bcss-noselect`
             lessonElem.id = `lesson-UUID-${this.lessons[i].UUID}`
             lessonElem.innerHTML = `
             <div class="UUID">${this.lessons[i].UUID}</div>
@@ -314,9 +401,6 @@ class new_Application {
             lessonList.appendChild(lessonElem)
         }
     }
-
-
-
 }
 
 
@@ -350,7 +434,11 @@ PRODUCTION:
 
 */
 
-let LaboFactice = new new_Application()
+LaboFactice = new new_Application()
+
+
+let ApplicationLoadingToast = BasicF.toast({ type:"loading", svg:"loading", title: "Chargement de l'application", content: `Merci d'utiliser LaboFactice !\nDéveloppé par Sylicium`, autoHide:false, timeout: 0})
 LaboFactice.init()
 
 
+})

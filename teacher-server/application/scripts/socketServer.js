@@ -39,9 +39,16 @@ function _startServer() {
 
 */
 
-const { Console } = require('console');
+function _startServer(datas) {
+    /*
 
-function _startServer() {
+    datas: {
+        lessonDatas: {/lesson/},
+        port: 1234,
+    }
+
+
+    */
     
     var http = require('http');
     let express = require('express');
@@ -52,7 +59,7 @@ function _startServer() {
         maxHttpBufferSize: 1e8
     });
 
-    httpServer.listen(7890, () => {
+    httpServer.listen(datas.port, () => {
         console.log(`[http] Website : localhost:${config.port_http}`)
     });
 

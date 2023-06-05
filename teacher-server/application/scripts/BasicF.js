@@ -248,4 +248,4 @@ Logger.log(`[BasicFunctions] Successfully loaded module.`)
 
 } catch(e) {
     Logger.log(`[BasicFunctions] An error occured while loading the module:`,e)
-}
+}   
