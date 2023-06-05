@@ -3,9 +3,28 @@ const fs = require("fs")
 const { exec } = require('node:child_process');
 var bonjour = require('bonjour')()
 
-const config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
+
 function saveConfig() {
     fs.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
+}
+let config;
+try {
+    config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
+} catch(e) {
+    config = {
+        "adminPassword":"prof",
+        "teacherLogin": {
+            "identifiant": "lacompa",
+            "password": "lacompa"
+        },
+        "bonjourService": {
+            "name": "LaboFacticeLan",
+            "port": 7890,
+            "type": "LaboFacticeLanServiceName"
+        }
+    }
+    saveConfig()
+    BasicF.toast({type:"warn", svg:"warn", title: "Echec du chargement du fichier de configuration", description:`L'application n'a pas pu charger le fichier de configuration config.json. Le fichier a été donc été réinitialisé à un état par défaut.`})
 }
 
 function openConfigFile() {
@@ -72,6 +91,8 @@ function makeLogin() {
 
 }
 
+let makeLoginKeyDown = e => e.code == "Enter" ? makeLogin() : ""
+
 
 function blobToDataURL(blob, callback) {
     var a = new FileReader();
@@ -108,6 +129,10 @@ let LoadingPageBackground = new new_LoadingPageBackground()
 
 class new_Application {
     constructor() {
+        this.ApplicationInfos = {
+            name: "LaboFactice",
+            version: "1.0.0-indev"
+        }
         this.initialized = false;
         this.Bonjour_service = undefined;
         let that = this
@@ -156,6 +181,8 @@ class new_Application {
         
         LoadingPage.stop()
     }
+    
+    getName() { return this.ApplicationInfos.name}
 
     quit() {
         if(this.selectedRecordUUID == null) {
@@ -194,9 +221,16 @@ class new_Application {
 
 
     loadLessons() {
-        let lessons = JSON.parse(fs.readFileSync("./application/datas/lessons.json","UTF-8"))
-        this.lessons = lessons
-        this.refreshLessonsListDisplay()
+        let path = "./application/datas/lessons.json"
+        try {
+            let lessons = JSON.parse(fs.readFileSync(path,"UTF-8"))
+            this.lessons = lessons
+            this.refreshLessonsListDisplay()
+        } catch(e) {
+            this.lessons = []
+            BasicF.toast({ type:"warn", svg:"warn", title: "Impossible de charger les leçons", description:`${LaboFactice.getName()} n'as pas pu charger les leçons du fichier ${path}.`})
+            this.refreshLessonsListDisplay()
+        }
     }
 
     saveLessons() {
@@ -216,14 +250,17 @@ class new_Application {
         let addLesson_lessonName = document.getElementById("addLesson_lessonName")
         let addLesson_lessonYoutubeLink = document.getElementById("addLesson_lessonYoutubeLink")
         let addLesson_lessonText = document.getElementById("addLesson_lessonText")
+        let addLesson_lessonClassName = document.getElementById("addLesson_lessonClassName")
 
         if(addLesson_lessonName.value =="") return alert("Tous les champs ne sont pas remplis !")
-        if(addLesson_lessonYoutubeLink.value =="") return alert("Tous les champs ne sont pas remplis !")
-        if(addLesson_lessonText.value =="") return alert("Tous les champs ne sont pas remplis !")
+        if(addLesson_lessonYoutubeLink.value == "") return alert("Tous les champs ne sont pas remplis !")
+        if(addLesson_lessonText.value == "") return alert("Tous les champs ne sont pas remplis !")
+        // if(addLesson_lessonClassName == "") addLesson_lessonClassName = ""
         
         let newLesson = {
             UUID: `${BasicF.genHex(6)}`,
             name: addLesson_lessonName.value,
+            class: `${addLesson_lessonClassName}`,
             youtubeLink: addLesson_lessonYoutubeLink.value,
             text: addLesson_lessonText.value,
         }
@@ -254,7 +291,7 @@ class new_Application {
 
     refreshLessonsListDisplay() {
         let lessonList = document.getElementById("lessonList")
-        lessonList.innerHTML = `<div class="lesson">
+        lessonList.innerHTML = `<div class="lesson lessonHeader">
         <div class="UUID">Identifiant</div>
         <div class="name">Nom de la leçon</div>
         <div class="youtubeLink">URL d'une vidéo youtube</div>
@@ -266,7 +303,7 @@ class new_Application {
         
         for(let i in this.lessons) {
             let lessonElem = document.createElement("div")
-            lessonElem.className = `lesson`
+            lessonElem.className = `lesson bcss-    noselect`
             lessonElem.id = `lesson-UUID-${this.lessons[i].UUID}`
             lessonElem.innerHTML = `
             <div class="UUID">${this.lessons[i].UUID}</div>

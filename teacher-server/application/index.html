@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./css/basicCss.css">
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/global/toasting.css">
 </head>
 
 <body>
 
+    <div id="toasting" style="position: absolute;"></div>
 
     <div id="mainbox">
 
@@ -38,13 +40,13 @@
         </div>
 
 
-        <div id="loginbox">
+        <div id="loginbox" hidden>
             <div class="bcss-centercontentdivmiddle">
                 <div class="login_center_box bcss-centerdiv">
                     <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
                     <h1 class="title">LaboFactice | Teacher</h1>
-                    <input id="login_identifiant" class="bcss-input1" placeholder="Identifiant">
-                    <input id="login_password" class="bcss-input1" placeholder="Mot de passe" type="password">
+                    <input id="login_identifiant" class="bcss-input1" placeholder="Identifiant" onkeydown="makeLoginKeyDown(event)">
+                    <input id="login_password" class="bcss-input1" placeholder="Mot de passe" type="password" onkeydown="makeLoginKeyDown(event)">
                     <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="makeLogin()">Se connecter</button>
                     <div class="buttons">
                     </div>
@@ -59,6 +61,7 @@
                     <button class="bcss-b-simple-danger" style="margin:0px;" onclick="LaboFactice.closeAddLeconPopup()">Annuler</button>
                     <h2 class="title">LaboFactice | Ajouter une leçon</h2>
                     <input id="addLesson_lessonName" class="bcss-input1" placeholder="Nom de la leçon">
+                    <input id="addLesson_lessonClassName" class="bcss-input1" placeholder="Classe (facultatif)">
                     <input id="addLesson_lessonYoutubeLink" class="bcss-input1" placeholder="URL de la vidéo youtube">
                     <textarea id="addLesson_lessonText" class="bcss-textarea1" placeholder="Texte explicatif"></textarea>
                     <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="LaboFactice.sendAddLesson()">Ajouter</button>
@@ -68,7 +71,7 @@
 
 
 
-        <div id="application" hidden>
+        <div id="application">
 
             <div class="menu">
                 <div class="box">
@@ -126,6 +129,8 @@
     
     
 
+    <script src="./scripts/global/toasting.js"></script>
+    <script src="./scripts/Logger.js"></script>
     <script src="./scripts/BasicF.js"></script>
   <script> 
    
