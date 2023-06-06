@@ -182,3 +182,124 @@ div.addLesson_center_box .title {
     padding: 3px;
     max-height: 100px;
 }
+
+
+#application div.app div.inSession div.flex{
+    display: flex;
+    flex-direction: row;
+}
+#application div.app div.inSession div.flex div.left {
+    flex: 1;
+}
+#application div.app div.inSession div.flex div.left div.classCanva {
+    background-color: gray;
+    height: 800px;
+    width: 800px;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 10px;
+}
+#application div.app div.inSession div.flex div.left div.classCanva div.computer {
+    background-color: white;
+    border-radius: 100px;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-weight: bold;
+    font-family: consolas;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    background-color: orange;
+}
+
+
+#application div.app div.inSession div.flex div.left div.classCanva div.computer:hover {
+    box-shadow: 0px 2px 10px 0px #000a;
+}
+
+
+
+/*
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext {
+    position: relative;
+    border-bottom: 1px dotted black;
+}
+  
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext:before {
+    content: attr(data-hover);
+    visibility: hidden;
+    width: max-content;
+    max-width: 300px;
+    height: max-content;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.75);
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    white-space:pre-wrap;
+    text-align: left;
+  
+    position: absolute;
+    z-index: 1;
+    left: 110%;
+    top: 10%;
+}
+  
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext:hover:before {
+    opacity: 1;
+    visibility: visible;
+}
+*/
+
+
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext {
+    position: relative;
+    border-bottom: 1px dotted black;
+}
+  
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext div.content {
+    content: attr(data-hover);
+    visibility: hidden; /* hidden */
+    width: max-content;
+    max-width: 300px;
+    height: max-content;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.75);
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  
+    position: absolute;
+    z-index: 1;
+    left: 110%;
+    top: 10%;
+}
+  
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext:hover div.content {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext div.content span.recordBar { }
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext div.content span.recordBar.recording {
+    color: orange;
+}
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext div.content span:not(.recording) > span.inRecordMention {
+    visibility: hidden;
+}
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext div.content span.recording > span.inRecordMention {
+    visibility: inherit;
+}

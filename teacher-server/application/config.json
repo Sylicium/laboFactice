@@ -8,5 +8,12 @@
         "name": "LaboFacticeLan",
         "port": 7890,
         "type": "LaboFacticeLanServiceName"
-    }
+    },
+    "classPlaces": [
+        {
+            "id": 1,
+            "x": 0,
+            "y": 0
+        }
+    ]
 }
