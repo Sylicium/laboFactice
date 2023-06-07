@@ -1,3 +1,5 @@
+const { compileFunction } = require("vm");
+
 let LaboFactice
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -24,7 +26,14 @@ try {
             "name": "LaboFacticeLan",
             "port": 7890,
             "type": "LaboFacticeLanServiceName"
-        }
+        },
+        "classPlaces": [
+            {
+                "computerName": "test",
+                "x": 0,
+                "y": 0
+            }
+        ]
     }
     saveConfig()
     BasicF.toast({type:"warn", svg:"warn", title: "Echec du chargement du fichier de configuration", content:`L'application n'a pas pu charger le fichier de configuration config.json. Le fichier a été donc été réinitialisé à un état par défaut.`, timeout: 15*1000})
@@ -151,6 +160,109 @@ class new_Application {
 
         this.counter = counter()
 
+        this.connectedComputers = {}
+
+        this.CanvaComputersFunctions = {
+            makeCanvaDraggable: (canvaElement) => {
+                if(!canvaElement || typeof canvaElement != 'object' || !canvaElement.className) return BasicF.toastError(new Error(`canvaElement must be type of DOM element.`))
+                for(let i in [...canvaElement.children]) {
+                    let e = [...canvaElement.children][i]
+                    if(!e || !e.className) continue;
+                    BasicF.setElementDraggable(e, true)
+                }
+                BasicF.toast({
+                    type: "info",
+                    title: "La carte peut maintenant être modifiée.",
+                })
+            },
+            stopCanvaDraggable: (canvaElement, doSaving) => {
+                if(!canvaElement || typeof canvaElement != 'object' || !canvaElement.className) return BasicF.toastError(new Error(`canvaElement must be type of DOM element.`))
+                for(let i in [...canvaElement.children]) {
+                    let e = [...canvaElement.children][i]
+                    BasicF.setElementDraggable(e, false)
+                }
+                BasicF.toast({
+                    type: "info",
+                    title: "La carte ne peut plus être modifiée.",
+                    svg: "warn"
+                })
+            
+                if(doSaving) {
+                    try {
+                        config.classPlaces = JSON.parse(JSON.stringify(LaboFactice.CanvaComputersFunctions.canvaElementsToObjectList(canvaElement)))
+                        saveConfig()
+                        BasicF.toast({
+                            type: "success",
+                            title: "Emplacements enregistrés."
+                        })
+                    } catch(e) {
+                        BasicF.toastError(e)
+                    }
+                }
+            },
+            redrawCanva: (canvaElement) => {
+                if(!canvaElement || typeof canvaElement != 'object' || !canvaElement.className) return BasicF.toastError(new Error(`canvaElement must be type of DOM element.`))
+                canvaElement.innerHTML = ""
+                for(let i in config.classPlaces) {
+                    let computer = config.classPlaces[i]
+                    let the_computer_elem = document.createElement("div")
+                    the_computer_elem.id = `canvaComputer_Name_${computer.computerName}`
+                    the_computer_elem.className = "computer hovertext noselect"
+                    the_computer_elem.innerHTML = `${computer.number}<div class="content">
+                    <span><span class="studentLastname">BARREAU</span> <span class="studentFirstname">Jean</span></span>
+                    <span class="recordBar recording"><span class="recordTime">00:00:00</span> <span class="inRecordMention">• (Recording)</span></span>
+                    <span><span class="recordCount">0</span> Enregistrements</span>
+                </div>`
+                    the_computer_elem.style = `top:${computer.top}px;left:${computer.left}px;`
+                    if(canvaElement.height < computer.top || canvaElement.width < computer.left) {
+                        BasicF.toast({
+                            type:"warn",
+                            title: `Placement invalide`,
+                            content: `L'élément '${computer.computerName}' a un placement de [top:${computer.top}px;left:${computer.left}px;] ce qui exède la taille limite du conteneur (${canvaElement.height}x${canvaElement.width})`,
+                            timeout: 30*1000,
+                            svg: "warn"
+                        })
+                        Logger.warn(`L'élément '${computer.computerName}' a un placement de [top:${computer.top}px;left:${computer.left}px;] ce qui exède la taille limite du conteneur (${canvaElement.height}x${canvaElement.width})`)
+                    }
+                    canvaElement.appendChild(the_computer_elem)
+                }
+        
+            },
+            canvaElementsToObjectList: (canvaElement) => {
+                if(!canvaElement || typeof canvaElement != 'object' || !canvaElement.className) return BasicF.toastError(new Error(`canvaElement must be type of DOM element.`))
+                let Obj = []
+                /*for(let i in [...canvaElement.children]) {
+                    let e = [...canvaElement.children][i]
+                    if(!e || !e.className) continue;
+                    Obj.push({
+                        "id": parseInt(),
+                        "computerName": `${e.id.replace("canvaComputer_Name_","")}`,
+                        "top": parseInt(e.style.top),
+                        "left": parseInt(e.style.left),
+                    })
+                }*/
+                for(let i in config.classPlaces) {
+                    let computer = config.classPlaces[i]
+                    let elem = document.getElementById(`canvaComputer_Name_${computer.computerName}`)
+                    let temp = JSON.parse(JSON.stringify(config.classPlaces[i]))
+                    if(!elem || typeof parseInt(elem.style.top) != 'number' || typeof parseInt(elem.style.left) != 'number') {
+                        BasicF.toast({
+                            type:"warn",
+                            title: `Erreur lors de l'enregistrement de ${computer.computerName}`,
+                            content: `Il est possible que l'ordinateur n'existe plus sur l'interface. Essayez de relancer l'application. Si le problème persiste contactez le développeur.`,
+                            timeout: 7*1000,
+                        })
+                        Obj.push(temp)
+                        continue;
+                    }
+                    temp.top = parseInt(elem.style.top) ?? 0
+                    temp.left = parseInt(elem.style.left) ?? 0
+                    Obj.push(temp)
+                }
+                return Obj
+            }
+        }
+
     }
 
 
@@ -193,6 +305,31 @@ class new_Application {
         }
     }
 
+    setConnectedComputers(connectedComputersObject) {
+        this.connectedComputers = connectedComputersObject
+    }
+    exportConnectedComputersToList() {
+        function* counter() {
+            let c=0
+            while(true) {
+                c++
+                yield c
+            }
+        }
+        let countr = counter()
+        let l = []
+        for(let key in this.connectedComputers) {
+            let obj = this.connectedComputers[key]
+            l.push({
+                "number": countr.next().value,
+                "computerName": obj.computerName,
+                "top": 0,
+                "left": 0
+            })
+        }
+        return l
+    }
+
     selectMenu(name) {
         let application_menu = document.getElementById("application").getElementsByClassName("menu")[0]
         application_menu.hidden = true
@@ -215,6 +352,11 @@ class new_Application {
                     this.startSession(UUID)
                 }
             })
+        }
+        if(name == "inSession") {
+            LaboFactice.CanvaComputersFunctions.redrawCanva(
+                document.getElementById("inSession_computer_canva")
+            )
         }
     }
 
@@ -248,7 +390,7 @@ class new_Application {
             })
         } else {
             try {
-                this.SOCKET_IO = _startServer({
+                this.SOCKET_IO = _startServer(LaboFactice, {
                     lessonDatas: lesson,
                     port: config.bonjourService.port
                 })
@@ -259,6 +401,7 @@ class new_Application {
                     content: `port=${config.bonjourService.port}`,
                     timeout: 30*1000,
                 })
+                this.selectMenu("inSession")
             } catch(e) {
                 BasicF.toastError(e)
             }
@@ -266,6 +409,62 @@ class new_Application {
 
 
         
+    }
+
+    realTimeUpdate(datas) {
+        /*
+        datas = {
+            computerName: systemOS.hostname(),
+            windowHasFocus: windowHasFocus,
+            loginInformations: LaboFactice.getLoginInformations(),
+            inSession: LaboFactice.sessionAlreadyStarted,
+            recording: boolean
+        }
+        */
+        try {
+            console.log("update:",datas)
+            let computer = config.classPlaces.filter(x => { return x.computerName == datas.computerName})[0]
+            let computerElement = document.getElementById(`canvaComputer_Name_${computer.computerName}`)
+            if(!computerElement || (!computerElement.className && computerElement.className != "")) {
+                Logger.debug(`Realtime update failed. Datas:`,datas)
+                return BasicF.toast({
+                    type: "warn",
+                    title: "Realtime update failed",
+                    content: `Computer: ${computer.computerName}.`
+                })
+            }
+            let status;
+            if(!datas.windowHasFocus) { status = "unfocused" }
+            else if(datas.recording) { status = "recording" }
+            else if(datas.inSession) { status = "connected" }
+            else { status = "none" }
+            console.log("status:",status)
+
+            this.setComputerStatusHTML(computerElement, status)
+        } catch(e) {
+            BasicF.toastError(e)
+        }
+        
+    }
+
+    setComputerStatusHTML(computerElement, status) {
+        /*
+        status:
+        none/default : fond gris
+        connected: font vert
+        recording: font orange
+        unfocused: font rouge
+        */
+        computerElement.classList.remove("status__none")
+        computerElement.classList.remove("status__connected")
+        computerElement.classList.remove("status__recording")
+        computerElement.classList.remove("status__unfocused")
+
+        let statusName = (["none","connected","recording","unfocused"].includes(status) ? status : "none")
+        console.log("statusName:",statusName)
+        computerElement.classList.add(`status__${statusName}`)
+        
+
     }
 
 
@@ -441,48 +640,6 @@ let ApplicationLoadingToast = BasicF.toast({ type:"loading", svg:"loading", titl
 LaboFactice.init()
 
 
-})
+}) /* window on load. no script outside */
 
 
-
-
-function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
-      // if present, the header is where you move the DIV from:
-      document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-    } else {
-      // otherwise, move the DIV from anywhere inside the DIV:
-      elmnt.onmousedown = dragMouseDown;
-    }
-  
-    function dragMouseDown(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
-    }
-  
-    function elementDrag(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      // set the element's new position:
-      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
-  
-    function closeDragElement() {
-      // stop moving when mouse button is released:
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
-  }

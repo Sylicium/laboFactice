@@ -39,7 +39,7 @@ function _startServer() {
 
 */
 
-function _startServer(datas) {
+function _startServer(LaboFactice, datas) {
     /*
 
     datas: {
@@ -64,20 +64,78 @@ function _startServer(datas) {
     });
 
 
+    let connectedComputers = {
+        /*"name": {
+            computerName: systemOS.hostname(),
+            windowHasFocus: windowHasFocus,
+            loginInformations: LaboFactice.getLoginInformations(),
+            inSession: LaboFactice.sessionAlreadyStarted
+        }*/
+    }
     
     ioHTTP.on('connection', async (socket) => {
         console.log(`[http/socket][+] New socket connected: ${socket.id}`)
+        BasicF.toast({
+            type: "log",
+            title: "Session socket",
+            content: `[${socket.id}] New socket connected.`,
+            svg: "success"
+        })
         let socket_id = socket.id
+
+        socket.on("LaboFactice_connected", (datas) => {
+            if(!datas.computerName || typeof datas.windowHasFocus != 'boolean' || typeof datas.loginInformations != 'object' || typeof datas.inSession != 'boolean') {
+                Logger.error(`Invalid socket datas>  SocketID:${socket.id}`,datas)
+                return BasicF.toast({
+                    type: "error",
+                    title: "Invalid socket datas",
+                    content: `SocketID:${socket.id}`
+                })
+            }
+
+            connectedComputers[datas.computerName] = {
+                computerName: datas.computerName,
+                windowHasFocus: datas.windowHasFocus,
+                loginInformations: datas.loginInformations,
+                inSession: datas.inSession,
+                socketID: socket.id
+            }
+            LaboFactice.setConnectedComputers(connectedComputers)
+        })
+        
 
         socket.on('disconnect', () => {
             console.log(`[http/socket][-] [${socket_id}] Disconnected.`)
+            BasicF.toast({
+                type: "log",
+                title: "Session socket",
+                content: `[${socket_id}] Disconnected.`,
+                svg: "error"
+            })
         })
         socket.on("test",() => {
             console.log("test ok")
+            BasicF.toast({
+                type: "log",
+                title: "Session socket",
+                content: `[${socket.id}] test ok.`
+            })
         })
 
         socket.on("LaboFactice", (datas) => {
             console.log("LaboFactice:", socket, datas)
+            BasicF.toast({
+                type: "log",
+                title: "Session socket",
+                content: `[${socket.id}] LaboFactice request.`,
+                svg: "info"
+            })
+        })
+
+
+        socket.on("LaboFactice_realTimeDatas", (datas) => {
+            //console.log("LaboFactice_realTimeDatas:",datas)
+            LaboFactice.realTimeUpdate(datas)
         })
 
 

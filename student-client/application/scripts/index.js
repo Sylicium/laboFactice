@@ -51,22 +51,6 @@ let LoadingPage = {
 }
 
 
-function makeLogin() {
-
-    login_firstname = document.getElementById("login_firstname")
-    login_lastname = document.getElementById("login_lastname")
-    login_birthday = document.getElementById("login_birthday")
-
-    if(login_firstname.value =="") return alert("Tous les champs ne sont pas remplis !")
-    if(login_lastname.value =="") return alert("Tous les champs ne sont pas remplis !")
-    if(login_birthday.value =="") return alert("Tous les champs ne sont pas remplis !")
-
-    let realDate = login_birthday.value.split("-").reverse().join("/")
-
-    LoadingPageBackground.clear()
-    LoadingPage.start('En attente de la session ...')
-
-}
 function blobToDataURL(blob, callback) {
     var a = new FileReader();
     a.onload = function(e) {callback(e.target.result);}
@@ -141,10 +125,30 @@ class new_Application {
             return { error: "Bonjour browser not defined yet." }
         }
 
+        this.loginInformations = {
+            logged: false,
+            firstname: null,
+            lastname: null,
+            birthday: null,
+        }
+        this.sessionAlreadyStarted = false
+
+    }
+
+    getLoginInformations() {
+        return JSON.parse(JSON.stringify(this.loginInformations))
     }
 
 
     startSession() {
+        if(this.sessionAlreadyStarted == true) return;
+        if(this.loginInformations.logged == false) {
+            setTimeout(() => {
+                this.startSession()
+            }, 500)
+            return;
+        }
+        this.sessionAlreadyStarted = true;
         console.log("starting session")
         LoadingPage.stop()
         document.getElementById("loginbox").hidden = true
@@ -177,7 +181,7 @@ class new_Application {
             }
         }
         try {
-            this.SOCKET_IO = _startClient(this.Bonjour_browser_getIpConfig())
+            this.SOCKET_IO = _startClient(LaboFactice, this.Bonjour_browser_getIpConfig())
         } catch(e) {
             LoadingPageBackground.appendText(`Crashed while initializing LaboFactice: ${e}`)
             await BasicF.sleep(500)
@@ -186,7 +190,7 @@ class new_Application {
             setTimeout(() => {
                 this.init()
             }, 1500)
-            LoadingPage.start("En attente de la session ...")
+            LoadingPage.start("En attente du poste prof ...")
             return;
         }
 
@@ -231,6 +235,30 @@ class new_Application {
         
         // await BasicF.sleep(500)
         LoadingPage.stop()
+    }
+
+    makeLogin() {
+
+        let login_firstname = document.getElementById("login_firstname")
+        let login_lastname = document.getElementById("login_lastname")
+        let login_birthday = document.getElementById("login_birthday")
+    
+        if(login_firstname.value =="") return alert("Tous les champs ne sont pas remplis !")
+        if(login_lastname.value =="") return alert("Tous les champs ne sont pas remplis !")
+        if(login_birthday.value =="") return alert("Tous les champs ne sont pas remplis !")
+    
+        let realDate = login_birthday.value.split("-").reverse().join("/")
+    
+        this.loginInformations = {
+            logged: true,
+            firstname: login_firstname.value,
+            lastname: login_lastname.value,
+            birthday: `${realDate}`,
+        }
+    
+        LoadingPageBackground.clear()
+        LoadingPage.start('En attente de la session ...')
+    
     }
 
     clearRecords() {
@@ -422,8 +450,7 @@ PRODUCTION:
     "resizable": false,
     "toolbar": false,
     "frame": false,
-    "width": 1000,
-    "height": 1000,
+    "fullscreen": true,
     "position": "center",
     "icon": "/application/LaboFacticeLogo.ico"
   }

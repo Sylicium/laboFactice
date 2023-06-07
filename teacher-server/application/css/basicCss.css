@@ -52,7 +52,7 @@ body {
 }
 
 
-.bcss-b-simple, .bcss-b-simple-warn, .bcss-b-simple-danger {
+.bcss-b-simple, .bcss-b-simple-warn, .bcss-b-simple-danger, .bcss-b-simple-success{
     background-color: hsl(216, 78%, 50%);
     width: fit-content;
     box-shadow: 0px 2px 10px -5px black;
@@ -90,6 +90,12 @@ body {
 .bcss-b-simple-danger { background-color: hsl(0, 78%, 50%); }
 .bcss-b-simple-danger:hover { background-color: hsl(0, 78%, 46%); transform: translate(0px, -2px); }
 .bcss-b-simple-danger:active { background-color: hsl(0, 78%, 40%);; }
+
+.bcss-b-simple-success { background-color: hsl(109deg 78% 45%); }
+.bcss-b-simple-success:hover { background-color: hsl(109deg 78% 41%); transform: translate(0px, -2px); }
+.bcss-b-simple-success:active { background-color: hsl(109deg 78% 35%); }
+
+
 
 
 .bcss-centercontentdivmiddle {

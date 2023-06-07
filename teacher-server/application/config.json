@@ -11,9 +11,10 @@
     },
     "classPlaces": [
         {
-            "id": 1,
-            "x": 0,
-            "y": 0
+            "number": 1,
+            "computerName": "pcQuentinMarie",
+            "top": 254,
+            "left": 133
         }
     ]
 }

@@ -235,8 +235,110 @@ class the_BasicFunctions {
     
         return return_string
     }
+    /**
+     * f() : Transforme un timestamp en un texte de date formatée
+     * @param {string} timestamp - Le timestamp à convertir
+     * @param {string} format - Le format texte à renvoyer (YYYY: year, MM: month, DDDDD: jour de la semaine, DD: day, hh: heure, mm: minute, ss: seconde)
+     */
+    formatDate(timestamp, format) {
+        /*
+        YYYY: year
+        MM: month
+        DDDDD: jour de la semaine
+        DD: day
+        hh: heure
+        mm: minute
+        ss: seconde
+        */
+        let la_date = new Date(timestamp)
+        function formatThis(thing, length=2) {
+            return `0000${thing}`.substr(-2)
+        }
+
+        function getDayName() {
+            let list = [
+                "lundi",
+                "mardi",
+                "mercredi",
+                "jeudi",
+                "vendredi",
+                "samedi",
+                "dimanche"
+            ]
+            return list[la_date.getDay()-1]
+        }
+
+        let return_string = format.replace("YYYY", la_date.getFullYear()).replace("MM", formatThis(la_date.getMonth()+1)).replace("DDDDD", getDayName()).replace("DD", formatThis(la_date.getDate())).replace("hh", formatThis(la_date.getHours())).replace("mm", formatThis(la_date.getMinutes())).replace("ss", formatThis(la_date.getSeconds()))
+
+        return return_string
+    }
 
     sleep = ms => new Promise(r => setTimeout(r, ms));
+
+
+    setElementDraggable(element, boolean) {      
+
+        let stopDragElement = (elmnt) => {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (document.getElementById(elmnt.id + "header")) {
+            // if present, the header is where you move the DIV from:
+            document.getElementById(elmnt.id + "header").onmousedown = "";
+            } else {
+            // otherwise, move the DIV from anywhere inside the DIV:
+            elmnt.onmousedown = "";
+            }
+        }
+
+        let dragElement = (elmnt) => {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (document.getElementById(elmnt.id + "header")) {
+            // if present, the header is where you move the DIV from:
+            document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+            } else {
+            // otherwise, move the DIV from anywhere inside the DIV:
+            elmnt.onmousedown = dragMouseDown;
+            }
+        
+            function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+            }
+        
+            function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            console.log("elmnt.style.top",elmnt.style.top)
+            console.log("elmnt.style.left",elmnt.style.left)
+            }
+        
+            function closeDragElement() {
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+            }
+        }
+
+        if(boolean) {
+            dragElement(element)
+        } else {
+            stopDragElement(element)
+        }
+
+    }
 
 
 }
