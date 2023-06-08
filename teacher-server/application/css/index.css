@@ -193,8 +193,8 @@ div.addLesson_center_box .title {
 }
 #application div.app div.inSession div.flex div.left div.classCanva {
     background-color: gray;
-    height: 800px;
-    width: 800px;
+    height: 600px;
+    width: 600px;
     margin: 10px;
     border-radius: 10px;
 }

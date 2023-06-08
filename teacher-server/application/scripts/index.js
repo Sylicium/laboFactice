@@ -1,13 +1,9 @@
-const { compileFunction } = require("vm");
 
 let LaboFactice
-
-window.addEventListener("DOMContentLoaded", () => {
 
 const fs = require("fs")
 const { exec } = require('node:child_process');
 var bonjour = require('bonjour')()
-
 
 function saveConfig() {
     fs.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
@@ -54,6 +50,7 @@ function openConfigFile() {
     }
 }
 
+window.addEventListener("DOMContentLoaded", () => {
 
 let LoadingPage = {
     start: (text=undefined) => {
