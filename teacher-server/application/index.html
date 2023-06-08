@@ -45,8 +45,8 @@
                 <div class="login_center_box bcss-centerdiv">
                     <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
                     <h1 class="title">LaboFactice | Teacher</h1>
-                    <input id="login_identifiant" class="bcss-input1" placeholder="Identifiant" onkeydown="makeLoginKeyDown(event)">
-                    <input id="login_password" class="bcss-input1" placeholder="Mot de passe" type="password" onkeydown="makeLoginKeyDown(event)">
+                    <input id="login_identifiant" class="bcss-input1" placeholder="Identifiant" onkeypress="makeLoginKeyDown(event)">
+                    <input id="login_password" class="bcss-input1" placeholder="Mot de passe" type="password" onkeypress="makeLoginKeyDown(event)">
                     <button class="bcss-b-simple" style="margin: 0px auto;margin-top: 10px;" onclick="makeLogin()">Se connecter</button>
                     <div class="buttons">
                     </div>
@@ -106,6 +106,7 @@
                         <div class="lesson">
                             <div class="UUID">Identifiant</div>
                             <div class="name">Nom de la leçon</div>
+                            <div class="class">Classe</div>
                             <div class="youtubeLink"><a href="#">URL d'une vidéo youtube</a></div>
                             <div class="text">Text explicatif pour la leçon</div>
                         </div>
@@ -147,6 +148,8 @@
                             <button class="bcss-b-simple" onclick='LaboFactice.CanvaComputersFunctions.stopCanvaDraggable(document.getElementById("inSession_computer_canva"))'>Arrêter de modifier</button>
                             <button class="bcss-b-simple-success" onclick='LaboFactice.CanvaComputersFunctions.stopCanvaDraggable(document.getElementById("inSession_computer_canva"), true)'>Sauvegarder</button>
                             <button class="bcss-b-simple" onclick="LaboFactice.importConnectedComputersAndSave()">Import connected computers and save them to config</button>
+                            <button class="bcss-b-simple" onclick="LaboFactice.displayComputerNamePages()">Afficher le nom des ordinateurs sur les écrans</button>
+                            
                         </div>
                         <div class="right">
     

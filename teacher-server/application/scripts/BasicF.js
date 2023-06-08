@@ -6,6 +6,41 @@ try {
 
 Logger.log(`[BasicFunctions] Loading module.`)
 
+class new_Cooldowns {
+    constructor() {
+        this.cooldowns = {}
+    }
+    create(UUID, delayMS) {
+        this.cooldowns[UUID] = {
+            UUID: UUID,
+            delay: delayMS,
+            lastUse: 0
+        }
+    }
+    use(UUID) {
+        if(Date.now() - this.cooldowns[UUID].lastUse < this.cooldowns[UUID].delay) {
+            return {
+                use: false,
+                remaining: (this.cooldowns[UUID].delay - (Date.now() - this.cooldowns[UUID].lastUse) )
+            }
+        } else {
+            this.cooldowns[UUID].lastUse = Date.now()
+            return {
+                use: true,
+                remaining: 0
+            }
+        }
+
+    }
+    clear(UUID) {
+        this.cooldowns[UUID] = {
+            UUID: UUID,
+            delay: this.cooldowns[UUID].delayMS,
+            lastUse: 0
+        }
+    }
+}
+
 class Emitter {
     constructor() {
         this.eventsNames = {}
@@ -52,6 +87,7 @@ class the_BasicFunctions {
             }
         }
         this.Emitter = Emitter
+        this.Cooldowns = new new_Cooldowns()
     }
 
     redirect(url) {
@@ -339,7 +375,6 @@ class the_BasicFunctions {
         }
 
     }
-
 
 }
 

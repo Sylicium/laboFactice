@@ -1,6 +1,8 @@
 
+const { BADFAMILY } = require("dns");
 const fs = require("fs")
 const { exec } = require('node:child_process');
+const { basename } = require("path");
 var bonjour = require('bonjour')()
 
 const config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
@@ -22,6 +24,12 @@ function openConfigFile() {
         }, 500)
     }
 }
+
+
+setInterval(() => {
+    document.getElementById("inSession_currentDate").textContent = BasicF.formatDate(Date.now(), "DDDDD DD/MM/YYYY")
+    document.getElementById("inSession_currentTime").textContent = BasicF.formatDate(Date.now(), "hh:mm:ss")
+}, 1000)
 
 
 let LoadingPage = {
@@ -55,6 +63,9 @@ function blobToDataURL(blob, callback) {
     var a = new FileReader();
     a.onload = function(e) {callback(e.target.result);}
     a.readAsDataURL(blob);
+}
+async function dataURLToBlob(dataURI) {
+    return await (await fetch(dataURI)).blob(); 
 }
 
 let GLOBAL_ = {
@@ -133,6 +144,9 @@ class new_Application {
         }
         this.sessionAlreadyStarted = false
 
+        
+        BasicF.Cooldowns.create("sendTchatMessage_z8mA0d21k", 1200)
+
     }
 
     getLoginInformations() {
@@ -156,11 +170,12 @@ class new_Application {
     }
 
 
-    displayComputerNamePage() {
+    displayComputerNamePage(computerNumber) {
+        console.log("displayComputerNamePage !!!")
         let systemOS = require("os")
         document.getElementById("infoboxComputerName").hidden = false
         document.getElementById("infoboxComputerName_computerName").textContent = `${systemOS.hostname()}`
-        BasicF.toas 
+        document.getElementById("infoboxComputerName_computerNumber").textContent = `${computerNumber}`
     }
 
     async init() {
@@ -244,6 +259,7 @@ class new_Application {
         
         // await BasicF.sleep(500)
         LoadingPage.stop()
+        document.getElementById("loginbox").hidden = false
     }
 
     makeLogin() {
@@ -272,6 +288,45 @@ class new_Application {
 
     clearRecords() {
         this.records = []
+    }
+
+    loadLesson(lessonDatas) {
+        /*
+        {
+            "UUID": "17fda8",
+            "name": "zefzef",
+            "class": "Premiere STMG",
+            "youtubeLink": "rth",
+            "text": "rth"
+        }
+        */
+
+        let app_left_video_listElements = document.getElementById("app_left_video_listElements")
+        app_left_video_listElements.innerHTML = ""
+        try {
+            let youtubeVideoIdRegex = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
+            let youtubeVideoId = lessonDatas.youtubeLink.match(youtubeVideoIdRegex)[1]
+            if(youtubeVideoId) {
+                let video = document.createElement("iframe")
+                video.className = "video"
+                video.src = `https://www.youtube-nocookie.com/embed/${youtubeVideoId}`
+                //video.style = "width:560px;height:315px;"
+                video.frameborder = "0"
+                video.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                video.frameborder = "0"
+                //video.allowfullscreen = "true"
+                video.setAttribute('allowFullScreen', '')
+
+                app_left_video_listElements.appendChild(video)
+            }
+        } catch(e) {
+            Logger.warn(e)
+            /*
+            document.getElementById("inSession_video1").src = lessonDatas.youtubeLink
+            */
+        }
+        document.getElementById("inSession_className").textContent = lessonDatas.class
+        document.getElementById("inSession_exerciceText").textContent = lessonDatas.text
     }
 
 
@@ -353,13 +408,47 @@ class new_Application {
         if(this.selectedRecordUUID == UUID) this.selectedRecordUUID = null
     }
 
-    quit() {
+    async quit() {
         if(this.selectedRecordUUID == null) {
             return alert(`Vous devez selectionner une piste audio avant de quitter.`)
         }
         let confirmation = confirm("Vous allez quitter LaboFactice, tout ce qui n'as pas été enregistré / envoyé sera perdu !")
         if(confirmation) {
-            window.close()
+            try {
+                let the_datas = LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)[0]
+                
+                
+                /*
+                fs.writeFileSync(`${process.env.USERPROFILE}\\Desktop\\LaboFactice_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.txt')}`, JSON.stringify({
+                    loginInformations: this.loginInformations,
+                    record: the_datas
+                }))
+                */
+
+                this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
+
+                this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, the_datas)
+                window.close()
+            } catch(e) {
+                BasicF.toastError(e)
+                BasicF.toast({
+                    type: "warn",
+                    title: "Erreur d'envoie au professeur",
+                    content: "L'envoie de l'enregistrement a échoué. Les enregistrements ont été sauvegardés sur le Bureau.\nL'application va se fermer dans 10 secondes.",
+                    hideProgressBar: true,
+                    autoHide: false
+                })
+                fs.writeFileSync(`${process.env.USERPROFILE}\\Desktop\\LaboFactice_saveError${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.txt')}`, JSON.stringify({
+                    loginInformations: this.loginInformations,
+                    selectedRecordUUID: this.selectedRecordUUID,
+                    records: this.records
+                }))
+                this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
+                setTimeout(() => {
+                    window.close()
+                }, 10*1000)
+                
+            }
         }
     }
 
@@ -434,7 +523,39 @@ class new_Application {
       
         // Remove link from body
         document.body.removeChild(link);
-      }
+    }
+
+
+
+    sendTchatMessage(event) {
+        if(event.code != "Enter") return;
+        let inputElement = document.getElementById("inSession_tchatInput")
+        if(inputElement.value.length == 0) return;
+
+        let cooldown = BasicF.Cooldowns.use("sendTchatMessage_z8mA0d21k")
+        if(!cooldown.use) {
+            return BasicF.toast({
+                type: "warn",
+                title: `Ralentissez entre les actions !`,
+                content: `Attendez encore ${cooldown.remaining}`
+            })
+        }
+
+        let tchatContent = document.getElementById("inSession_tchat_content")
+
+        let new_message = document.createElement("div")
+        new_message.className = "message message_me"
+        new_message.innerHTML = `<div class="username">Vous<span style="font-weight:100;"> | ${BasicF.formatDate(Date.now(), "hh:mm:ss")}</span></div>
+            <div class="msg_content"></div>`
+        new_message.getElementsByClassName("msg_content")[0].textContent = inputElement.value
+        
+        tchatContent.appendChild(new_message)
+        tchatContent.scrollTo(0,10000);
+
+        inputElement.value = ""
+        
+        
+    }
 }
 
 

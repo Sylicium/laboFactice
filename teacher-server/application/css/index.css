@@ -175,6 +175,7 @@ div.addLesson_center_box .title {
 
 #application div.lessonList > div.lesson > div.UUID{ width: 200px; min-width: fit-content; }
 #application div.lessonList > div.lesson > div.name{ width: 200px; min-width: fit-content; }
+#application div.lessonList > div.lesson > div.class{ width: 150px; min-width: fit-content; }
 #application div.lessonList > div.lesson > div.youtubeLink{ width: 350px; min-width: fit-content; }
 #application div.lessonList > div.lesson:not(.lessonHeader) > div.text{ width: max-content; overflow-y: auto; flex: 1; border: 1px solid gray; border-radius: 5px;}
 
@@ -289,6 +290,23 @@ div.addLesson_center_box .title {
     left: 110%;
     top: 10%;
 }
+
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .msgBubble {
+    visibility: hidden;
+    position: absolute;
+    top: -8px;
+    right: -13px;
+}
+
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .callTeacher {
+    position: absolute;
+    top: -8px;
+    left: -13px;
+}
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .msgBubble.active,.callTeacher.active {
+    visibility: visible;
+}
+
   
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext:hover div.content {
     opacity: 1;

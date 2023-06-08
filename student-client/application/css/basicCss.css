@@ -92,6 +92,15 @@ body {
 .bcss-b-simple-danger:active { background-color: hsl(0, 78%, 40%);; }
 
 
+.bcss-b-disabled {
+    background-color: hsl(0, 0%, 70%) !important;
+    cursor: not-allowed !important;
+}
+.bcss-b-disabled:hover {
+    background-color: hsl(0, 0%, 70%) !important;
+    transform: translate(0px, 0px) !important;
+}
+
 .bcss-centercontentdivmiddle {
     
     height: 100vh;

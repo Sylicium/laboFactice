@@ -108,6 +108,9 @@ function blobToDataURL(blob, callback) {
     a.onload = function(e) {callback(e.target.result);}
     a.readAsDataURL(blob);
 }
+async function dataURLToBlob(dataURI) {
+    return await (await fetch(dataURI)).blob(); 
+}
 
 let GLOBAL_ = {
     rec: undefined
@@ -210,7 +213,9 @@ class new_Application {
                     <span class="recordBar recording"><span class="recordTime">00:00:00</span> <span class="inRecordMention">• (Recording)</span></span>
                     <span><span class="recordCount">0</span> Enregistrements</span>
                     <span><span class="computerName">PC: ${computer.computerName}</span></span>
-                </div>`
+                </div>
+                <div class="msgBubble">💬</div>*
+                <div class="callTeacher">🤚</div>`
                     the_computer_elem.style = `top:${computer.top}px;left:${computer.left}px;`
                     if(canvaElement.height < computer.top || canvaElement.width < computer.left) {
                         BasicF.toast({
@@ -329,6 +334,8 @@ class new_Application {
     }
 
     importConnectedComputersAndSave() {
+        let confirmation = confirm(`Attention, cette action remplacera tous les postes précédemment enregistrés ainsi que leurs emplacement dans la salle. Êtes vous sûr de vouloir continuer.`)
+        if(!confirmation) return;
         try {
             let list = this.exportConnectedComputersToList()
             config.classPlaces = list
@@ -381,6 +388,10 @@ class new_Application {
         let menu = application.getElementsByClassName("menu")[0]
         app.hidden = true
         menu.hidden = false
+    }
+
+    displayComputerNamePages() {
+        LaboFactice.SOCKET_IO.sockets.emit('LaboFactice_displayComputerNamePage', config.classPlaces)
     }
 
     startSession(lessonUUID) {
@@ -524,7 +535,7 @@ class new_Application {
         let newLesson = {
             UUID: `${BasicF.genHex(6)}`,
             name: addLesson_lessonName.value,
-            class: `${addLesson_lessonClassName}`,
+            class: `${addLesson_lessonClassName.value}`,
             youtubeLink: addLesson_lessonYoutubeLink.value,
             text: addLesson_lessonText.value,
         }
@@ -573,6 +584,7 @@ class new_Application {
         lessonList.innerHTML = `<div class="lesson lessonHeader">
         <div class="UUID">Identifiant</div>
         <div class="name">Nom de la leçon</div>
+        <div class="class">Classe</div>
         <div class="youtubeLink">URL d'une vidéo youtube</div>
         <div class="text">Texte explicatif pour la leçon</div>
     </div>`
@@ -585,6 +597,7 @@ class new_Application {
             lessonElem.innerHTML = `
             <div class="UUID">${this.lessons[i].UUID}</div>
             <div class="name">${this.lessons[i].name}</div>
+            <div class="class">${this.lessons[i].class}</div>
             <div class="youtubeLink"><a target="_BLANK" href="${this.lessons[i].youtubeLink}">${this.lessons[i].youtubeLink}</a></div>
             <div class="text">${this.lessons[i].text}</div>
             ${options.btnDelete ? `<button class="bcss-b-simple-danger" onclick='LaboFactice.removeLessonByElement(this)'>Supprimer</button>` : ""}`
@@ -598,6 +611,7 @@ class new_Application {
         lessonList.innerHTML = `<div class="lesson lessonHeader">
         <div class="UUID">Identifiant</div>
         <div class="name">Nom de la leçon</div>
+        <div class="class">Classe</div>
         <div class="youtubeLink">URL d'une vidéo youtube</div>
         <div class="text">Texte explicatif pour la leçon</div>
     </div>`
@@ -609,6 +623,7 @@ class new_Application {
             lessonElem.innerHTML = `
             <div class="UUID">${this.lessons[i].UUID}</div>
             <div class="name">${this.lessons[i].name}</div>
+            <div class="class">${this.lessons[i].class}</div>
             <div class="youtubeLink"><a target="_BLANK" href="${this.lessons[i].youtubeLink}">${this.lessons[i].youtubeLink}</a></div>
             <div class="text">${this.lessons[i].text}</div>
             <button class="bcss-b-simple-danger" onclick='LaboFactice.removeLessonByElement(this)'>Supprimer</button>`

@@ -14,9 +14,10 @@
 
     <div id="mainbox">
 
-        <div id="infoboxComputerName">
+        <div id="infoboxComputerName" hidden>
             <div class="infovox_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <h2 id="infoboxComputerName_computerNumber" class="text">.<h2>
                     <h2 id="infoboxComputerName_computerName" class="text">.<h2>
                     <button class="bcss-b-simple" onclick="document.getElementById('infoboxComputerName').hidden=true">Fermer</button>
                 </div>
@@ -24,7 +25,18 @@
         </div>
 
 
-        <div id="loginbox">
+        <div id="loadingbox" hidden>
+            <div id="loadingboxCodeBackground" class="code"></div>
+            <div class="loading_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+
+                    <h2 id="loadingboxText">En attente de la session ...</h2>
+                    <button class="bcss-b-prim" onclick="window.location.reload()">Recharger</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loginbox" hidden>
             <div class="bcss-centercontentdivmiddle">
                 <div class="login_center_box bcss-centerdiv">
                     <button class="bcss-b-simple" style="margin:0px;" onclick="openConfigFile()">Configuration</button>
@@ -40,17 +52,6 @@
             </div>
         </div>
 
-        <div id="loadingbox" hidden="">
-            <div id="loadingboxCodeBackground" class="code"></div>
-            <div class="loading_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-
-                    <h2 id="loadingboxText">En attente de la session ...</h2>
-                    <button class="bcss-b-prim" onclick="window.location.reload()">Recharger</button>
-                </div>
-            </div>
-        </div>
-
         
         <div id="currentlyRecordingPopup" hidden>
             <div class="box">
@@ -62,16 +63,24 @@
 
             <div class="bandeau" style="display:flex;flex-direction: row;align-items: center;">
                 <h1 class="title" style="margin:0;margin-left: 20px;font-family: cursive;">LaboFactice</h1>
-                <button class="bcss-b-simple-warn callTeacher" style="margin: auto;">Appeller le professeur</button>
+                <button class="bcss-b-simple-warn bcss-b-disabled callTeacher" style="margin: auto;">Appeller le professeur</button>
                 <button class="bcss-b-simple-danger" onclick="LaboFactice.quit()">Quitter</button>
             </div>
             <div class="app">
                 <div class="left">
-                    <div class="video">
-                        <video src="./datas/test2.mp4" controls></video>
+                    <div id="app_left_video_listElements" class="video">
+                        <video id="inSession_video1" src="./datas/test2.mp4" controls></video>
                     </div>
-                    <div class="exerciceText">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, dignissimos illo explicabo esse perspiciatis rerum repellat eaque voluptatibus eligendi molestias dolore quibusdam ipsum neque saepe cupiditate nostrum ipsam? Fuga quas quam nobis vero laudantium veritatis vitae odio consequatur fugiat voluptatem exercitationem voluptate illum dolorum obcaecati dolorem tenetur deserunt illo nostrum accusamus, quis maiores. Ea corrupti temporibus accusamus libero facere ut aperiam corporis autem, doloremque eligendi tempora animi ducimus et amet illum nam laboriosam minima velit officia quae inventore. Deleniti fugit neque id dolores adipisci aut, quas nesciunt amet excepturi, eveniet quae. Quas delectus molestias deleniti excepturi sunt tenetur earum saepe. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus ipsum similique, iusto consequatur corrupti placeat libero tempora quo provident quae autem laborum voluptas tenetur labore delectus qui dolore veniam? Repellendus eum laboriosam modi doloribus accusantium vero obcaecati nam. Porro modi laudantium dolor voluptates officiis obcaecati adipisci fugiat deleniti eius error. Consequuntur, molestiae repudiandae, eum nihil fuga veritatis illum sunt molestias tenetur optio asperiores explicabo quaerat commodi! Laboriosam maxime molestiae sunt reprehenderit dolor consequuntur dolore cumque quos fugit beatae, incidunt vel expedita sit vero neque dolores. Sint blanditiis odio accusamus sequi soluta? Atque maiores ducimus sequi sapiente vero. Atque blanditiis libero repellendus ab necessitatibus expedita, vel officiis praesentium magnam tempora est eaque perspiciatis possimus unde quidem consequatur quas reiciendis optio. Reprehenderit saepe officia molestias deleniti error quis quasi aperiam. Suscipit, optio. Excepturi voluptate optio qui maxime voluptas quis, sit earum, repellendus magni praesentium quo? Ipsum minima, laboriosam tenetur, quisquam illo perferendis molestiae iusto hic doloremque aperiam ipsam suscipit explicabo. Praesentium necessitatibus voluptatibus quia, autem dolores ducimus ipsum suscipit eaque accusamus maxime ea possimus, nobis expedita vero cumque nulla quisquam voluptatum, totam aliquid? Earum incidunt iusto cumque consequatur soluta ab, mollitia architecto saepe ullam eaque voluptates neque dolores accusantium delectus dolorem at ducimus placeat odio. Facere, aperiam sapiente esse eligendi perferendis fuga, placeat consequatur sed quos fugiat possimus, quasi reprehenderit nesciunt quibusdam eius. Nisi, recusandae officia. Beatae nostrum aperiam, eum omnis laboriosam aliquid nam odio suscipit quae veritatis esse libero aliquam voluptas tempore, commodi ipsum recusandae provident. Excepturi est voluptatibus minima? Repellendus cum beatae omnis nisi facere quasi fugit esse itaque eligendi explicabo delectus odio inventore qui amet tempora officia modi et dolorem fuga quaerat, ut cupiditate quam. Sapiente ut distinctio minus nesciunt eos esse perferendis. Excepturi officiis non, exercitationem culpa quod corporis repudiandae placeat laboriosam id, aliquam hic voluptatibus architecto! Voluptates! Lorem100
+                    <h2>Classe: <span id="inSession_className">none</span></h2>
+                    <div id="inSession_exerciceText" class="exerciceText">
+Lorem ipsum dolor sit amet consectetu
+                        
+r adipisicing elit. Voluptatem, dignissimos 
+illo explicabo esse perspiciatis rerum 
+
+repellat eaque vo
+luptatibus eligendi molestias dolore q
+uibusdam ipsum neque saepe cupiditate nostrum ipsam? Fuga quas quam nobis vero laudantium veritatis vitae odio consequatur fugiat voluptatem exercitationem voluptate illum dolorum obcaecati dolorem tenetur deserunt illo nostrum accusamus, quis maiores. Ea corrupti temporibus accusamus libero facere ut aperiam corporis autem, doloremque eligendi tempora animi ducimus et amet illum nam laboriosam minima velit officia quae inventore. Deleniti fugit neque id dolores adipisci aut, quas nesciunt amet excepturi, eveniet quae. Quas delectus molestias deleniti excepturi sunt tenetur earum saepe. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus ipsum similique, iusto consequatur corrupti placeat libero tempora quo provident quae autem laborum voluptas tenetur labore delectus qui dolore veniam? Repellendus eum laboriosam modi doloribus accusantium vero obcaecati nam. Porro modi laudantium dolor voluptates officiis obcaecati adipisci fugiat deleniti eius error. Consequuntur, molestiae repudiandae, eum nihil fuga veritatis illum sunt molestias tenetur optio asperiores explicabo quaerat commodi! Laboriosam maxime molestiae sunt reprehenderit dolor consequuntur dolore cumque quos fugit beatae, incidunt vel expedita sit vero neque dolores. Sint blanditiis odio accusamus sequi soluta? Atque maiores ducimus sequi sapiente vero. Atque blanditiis libero repellendus ab necessitatibus expedita, vel officiis praesentium magnam tempora est eaque perspiciatis possimus unde quidem consequatur quas reiciendis optio. Reprehenderit saepe officia molestias deleniti error quis quasi aperiam. Suscipit, optio. Excepturi voluptate optio qui maxime voluptas quis, sit earum, repellendus magni praesentium quo? Ipsum minima, laboriosam tenetur, quisquam illo perferendis molestiae iusto hic doloremque aperiam ipsam suscipit explicabo. Praesentium necessitatibus voluptatibus quia, autem dolores ducimus ipsum suscipit eaque accusamus maxime ea possimus, nobis expedita vero cumque nulla quisquam voluptatum, totam aliquid? Earum incidunt iusto cumque consequatur soluta ab, mollitia architecto saepe ullam eaque voluptates neque dolores accusantium delectus dolorem at ducimus placeat odio. Facere, aperiam sapiente esse eligendi perferendis fuga, placeat consequatur sed quos fugiat possimus, quasi reprehenderit nesciunt quibusdam eius. Nisi, recusandae officia. Beatae nostrum aperiam, eum omnis laboriosam aliquid nam odio suscipit quae veritatis esse libero aliquam voluptas tempore, commodi ipsum recusandae provident. Excepturi est voluptatibus minima? Repellendus cum beatae omnis nisi facere quasi fugit esse itaque eligendi explicabo delectus odio inventore qui amet tempora officia modi et dolorem fuga quaerat, ut cupiditate quam. Sapiente ut distinctio minus nesciunt eos esse perferendis. Excepturi officiis non, exercitationem culpa quod corporis repudiandae placeat laboriosam id, aliquam hic voluptatibus architecto! Voluptates! Lorem100
                     </div>
                 </div>
                 <div class="right">
@@ -125,6 +134,19 @@
                         </div>
                         -->
 
+                    </div>
+                    <div class="tchat">
+                        <div id="inSession_tchat_content" class="content">
+                            <div class="message message_prof">
+                                <div class="username">Professeur</div>
+                                <div class="msg_content">Session démarrée.</div>
+                            </div>
+                        </div> 
+                        <input id="inSession_tchatInput"class="tchatInput" placeholder="Message.." onkeypress="LaboFactice.sendTchatMessage(event)">
+                    </div>
+                    <div class="dateAndTime">
+                        <h2><span id="inSession_currentTime">--:--:--</span></h2>
+                        <h2><span id="inSession_currentDate">--/--/--</span></h2>
                     </div>
                     
                 </div>

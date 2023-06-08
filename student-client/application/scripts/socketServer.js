@@ -14,12 +14,28 @@ function _startClient(LaboFactice, startClientDatas) {
         socket.emit("LaboFactice_connected", getRealtimeDatas())
     });
 
+    socket.on("LaboFactice_loadLesson", (lessonDatas) => {
+        LaboFactice.loadLesson(lessonDatas)
+    })
+
     socket.on("disconnect", () => {
         console.log("[socket] Disconnected.");
     });
 
     socket.on("LaboFactice", (datas) => {
 
+    })
+
+
+    socket.on("LaboFactice_displayComputerNamePage", (classPlaces) => {
+        let myComputer = classPlaces.filter(x => { return x.computerName == systemOS.hostname()})
+        let myComputerNumber;
+        if(myComputer.length == 0) {
+            myComputerNumber = "Error. Computer not found in teacher config.classPlaces"
+        } else {
+            myComputerNumber=  myComputer.number
+        }
+        LaboFactice.displayComputerNamePage(myComputerNumber)
     })
 
 

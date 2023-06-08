@@ -53,17 +53,24 @@ div.login_center_box .title {
     margin: 0px auto;
     padding: 10px;
 }
-#application div.app div.left div.video video {
+#application div.app div.left div.video .video {
     width: 700px;
     height: 400px;
     border-radius: 25px;
 }
 
+#application div.app div.left div.exerciceText {
+    white-space: pre-wrap;
+}
 
 #application div.app div.right {
-    max-width: fit-content;
+    max-width: 33vw; /* fit-content; */
     padding: 10px;
     border-left: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    overflow-y: auto;
 }
 #application div.app div.right div.informations {
     display: flex;
@@ -78,8 +85,8 @@ div.login_center_box .title {
     flex-direction: column;
     align-items: center;
     width: fit-content;
-    height: 90vh;
     overflow-y: auto;
+    flex: 1 1;
     padding: 10px;
 }
 #application div.app div.right div#audioList div.audio {
@@ -97,6 +104,76 @@ div.login_center_box .title {
     background-color: #41e64c;
 }
 
+#application div.app div.right div.tchat {
+    padding: 0px;
+}
+#application div.app div.right div.tchat div.content {
+    border: 1px solid black;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-top: 50px;
+}
+
+#application div.app div.right div.tchat div.content div.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+}
+#application div.app div.right div.tchat div.content div.message div.username {
+    padding: 0px 5px;
+    font-weight: bold;
+}
+#application div.app div.right div.tchat div.content div.message_me div.username {
+    text-align: right;
+}
+#application div.app div.right div.tchat div.content div.message_prof div.username {
+    text-align: left;
+}
+#application div.app div.right div.tchat div.content div.message > .msg_content{
+    font-size: 1em;
+    width: fit-content;
+    padding: 5px;
+    margin: 3px;
+}
+#application div.app div.right div.tchat div.content div.message_me {
+    margin-left: auto;
+}
+#application div.app div.right div.tchat div.content div.message_me > .msg_content{
+    background-color: #44ca4d;
+    border-radius: 10px 0px 10px 10px;
+    margin-left: auto;
+}
+#application div.app div.right div.tchat div.content div.message_prof {
+    margin-right: auto;
+}
+#application div.app div.right div.tchat div.content div.message_prof > .msg_content{
+    background-color: #cdcdcd;
+    border-radius: 0px 10px 10px 10px;
+    margin-right: auto;
+}
+#application div.app div.right div.tchat input.tchatInput {
+    border: 2px solid black;
+    border-radius: 0px 0px 10px 10px;
+    border-top: none;
+    font-size: 1.1em;
+    padding: 5px;
+    width: 100%;
+}
+
+
+
+#application div.app div.right div.dateAndTime {
+    display: flex;
+    text-align: right;
+    justify-content: right;
+    flex-direction: column;
+    margin: 10px;
+}
+#application div.app div.right div.dateAndTime > h2 {
+    margin: 0px;
+}
 
 #loadingbox {
     z-index: 9900;

@@ -100,6 +100,8 @@ function _startServer(LaboFactice, datas) {
         })
         let socket_id = socket.id
 
+        socket.emit("LaboFactice_loadLesson", datas.lessonDatas)
+
         socket.on("LaboFactice_connected", (datas) => {
             if(!datas.computerName || typeof datas.windowHasFocus != 'boolean' || typeof datas.loginInformations != 'object' || typeof datas.inSession != 'boolean') {
                 Logger.error(`Invalid socket datas>  SocketID:${socket.id}`,datas)
