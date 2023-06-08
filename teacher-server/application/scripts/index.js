@@ -423,7 +423,12 @@ class new_Application {
         */
         try {
             console.log("update:",datas)
-            let computer = config.classPlaces.filter(x => { return x.computerName == datas.computerName})[0]
+            let computer = config.classPlaces.filter(x => { return x.computerName == datas.computerName})
+            if(computer.length == 0) {
+                Logger.warn(`[Application.realTimeUpdate()]: Failed updating computer '${datas.computerName}': Computer not in list. Try doing a new export of connected computers.`)
+                return;
+            }
+            computer = computer[0]
             let computerElement = document.getElementById(`canvaComputer_Name_${computer.computerName}`)
             if(!computerElement || (!computerElement.className && computerElement.className != "")) {
                 Logger.debug(`Realtime update failed. Datas:`,datas)
@@ -438,7 +443,6 @@ class new_Application {
             else if(datas.recording) { status = "recording" }
             else if(datas.inSession) { status = "connected" }
             else { status = "none" }
-            console.log("status:",status)
 
             this.setComputerStatusHTML(computerElement, status)
         } catch(e) {
@@ -461,7 +465,7 @@ class new_Application {
         computerElement.classList.remove("status__unfocused")
 
         let statusName = (["none","connected","recording","unfocused"].includes(status) ? status : "none")
-        console.log("statusName:",statusName)
+        // console.log("statusName:",statusName)
         computerElement.classList.add(`status__${statusName}`)
         
 

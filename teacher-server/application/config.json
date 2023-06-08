@@ -13,8 +13,20 @@
         {
             "number": 1,
             "computerName": "pcQuentinMarie",
-            "top": 254,
-            "left": 133
+            "top": 253,
+            "left": 54
+        },
+        {
+            "number": 2,
+            "computerName": "PC-LANGUES-21",
+            "top": 196,
+            "left": 57
+        },
+        {
+            "number": 3,
+            "computerName": "PC-LANGUES-20",
+            "top": 0,
+            "left": 0
         }
     ]
 }
