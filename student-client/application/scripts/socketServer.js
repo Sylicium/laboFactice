@@ -33,7 +33,9 @@ function _startClient(LaboFactice, datas) {
             windowHasFocus: windowHasFocus,
             loginInformations: LaboFactice.getLoginInformations(),
             inSession: LaboFactice.sessionAlreadyStarted,
-            recording: LaboFactice.currentlyRecording
+            recording: LaboFactice.currentlyRecording,
+            recordingTime: LaboFactice.recordTimeFormated_temp,
+            recordCount: LaboFactice.records.length // ATTENTION, NE PAS ENVOYER JUSTE RECORDS SINON CA ENVOIE AUSSI LE BLOB ET DATA URL --> SURCHARGE RESEAU
         }
     }
 

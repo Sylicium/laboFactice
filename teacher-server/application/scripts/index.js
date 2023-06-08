@@ -206,9 +206,10 @@ class new_Application {
                     the_computer_elem.id = `canvaComputer_Name_${computer.computerName}`
                     the_computer_elem.className = "computer hovertext noselect"
                     the_computer_elem.innerHTML = `${computer.number}<div class="content">
-                    <span><span class="studentLastname">BARREAU</span> <span class="studentFirstname">Jean</span></span>
+                    <span><span class="studentLastname">Loading</span> <span class="studentFirstname">...</span></span>
                     <span class="recordBar recording"><span class="recordTime">00:00:00</span> <span class="inRecordMention">• (Recording)</span></span>
                     <span><span class="recordCount">0</span> Enregistrements</span>
+                    <span><span class="computerName">PC: ${computer.computerName}</span></span>
                 </div>`
                     the_computer_elem.style = `top:${computer.top}px;left:${computer.left}px;`
                     if(canvaElement.height < computer.top || canvaElement.width < computer.left) {
@@ -411,10 +412,15 @@ class new_Application {
     realTimeUpdate(datas) {
         /*
         datas = {
-            computerName: systemOS.hostname(),
-            windowHasFocus: windowHasFocus,
-            loginInformations: LaboFactice.getLoginInformations(),
-            inSession: LaboFactice.sessionAlreadyStarted,
+            computerName: string,
+            windowHasFocus: boolean,
+            loginInformations: {
+                logged: logged, // boolean
+                firstname: firstname, // string
+                lastname: lastname, // string
+                birthday: birthday, // string "JJ/MM/AAAAA"
+            },
+            inSession: boolean
             recording: boolean
         }
         */
@@ -442,6 +448,15 @@ class new_Application {
             else { status = "none" }
 
             this.setComputerStatusHTML(computerElement, status)
+
+            let content = computerElement.getElementsByClassName("content")[0]
+            content.getElementsByClassName("studentLastname")[0].textContent = datas.loginInformations.lastname
+            content.getElementsByClassName("studentFirstname")[0].textContent = datas.loginInformations.firstname
+            content.getElementsByClassName("computerName")[0].textContent = datas.computerName
+            content.getElementsByClassName("recordCount")[0].textContent = datas.recordCount
+
+
+
         } catch(e) {
             BasicF.toastError(e)
         }

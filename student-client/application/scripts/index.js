@@ -224,6 +224,7 @@ class new_Application {
         setInterval(() => {
             if(this.currentlyRecording) {
                 let new_text = BasicF.formatTime(Date.now() - this.startedRecordAt, "hh:mm:ss")
+                this.recordTimeFormated_temp = new_text
                 recordTimer.textContent = new_text
                 recordTimer2.textContent = new_text
             }
@@ -386,6 +387,7 @@ class new_Application {
     stopRecord() {
         console.log("[LaboFactice:stopRecord()] Stopping record.")
         this.currentlyRecording = false;
+        this.recordTimeFormated_temp = "00:00:00"
         this.recordButton.className = "bcss-b-simple"
         this.recordButton.textContent = "Commencer l'enregistrement"
         this.onclick = "LaboFactice.toggleRecord()"

@@ -68,8 +68,16 @@ function _startServer(LaboFactice, datas) {
         /*"name": {
             computerName: systemOS.hostname(),
             windowHasFocus: windowHasFocus,
-            loginInformations: LaboFactice.getLoginInformations(),
-            inSession: LaboFactice.sessionAlreadyStarted
+            loginInformations: {
+                logged: logged,
+                firstname: firstname,
+                lastname: lastname,
+                birthday: birthday,
+            },
+            inSession: LaboFactice.sessionAlreadyStarted, // boolean
+            recording: LaboFactice.currentlyRecording, // boolean
+            recordingTime: LaboFactice.recordTimeFormated_temp // 00:00:00,
+            recordCount: number
         }*/
     }
     
@@ -94,11 +102,17 @@ function _startServer(LaboFactice, datas) {
             }
 
             connectedComputers[datas.computerName] = {
-                computerName: datas.computerName,
-                windowHasFocus: datas.windowHasFocus,
-                loginInformations: datas.loginInformations,
-                inSession: datas.inSession,
-                socketID: socket.id
+                computerName: datas.computerName ??  "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+                windowHasFocus: (typeof datas.windowHasFocus == 'boolean' ? datas.windowHasFocus : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+                loginInformations: {
+                    logged: (typeof datas.loginInformations.logged == 'boolean' ? datas.loginInformations.logged : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+                    firstname: datas.loginInformations.firstname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+                    lastname: datas.loginInformations.lastname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+                    birthday: datas.loginInformations.birthday ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+                },
+                inSession: (typeof datas.inSession == 'boolean' ? datas.inSession : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+                socketID: socket.id,
+                recordCount: (typeof datas.recordCount == 'number' ? datas.recordCount : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE")
             }
             LaboFactice.setConnectedComputers(connectedComputers)
         })
