@@ -328,6 +328,23 @@ class new_Application {
         return l
     }
 
+    importConnectedComputersAndSave() {
+        try {
+            let list = this.exportConnectedComputersToList()
+            config.classPlaces = list
+            saveConfig()
+            // Now refreshing canva
+            LaboFactice.CanvaComputersFunctions.redrawCanva(document.getElementById("inSession_computer_canva"))
+            BasicF.toast({
+                type: "success",
+                title: "La configuration a été remplacée avec succès.",
+            })
+        } catch(e) {
+            BasicF.toastError(e)
+        }
+        
+    }
+
     selectMenu(name) {
         let application_menu = document.getElementById("application").getElementsByClassName("menu")[0]
         application_menu.hidden = true
@@ -422,6 +439,8 @@ class new_Application {
             },
             inSession: boolean
             recording: boolean
+            recordTime: "00:00:00
+            recordCount"
         }
         */
         try {
@@ -441,48 +460,28 @@ class new_Application {
                     content: `Computer: ${computer.computerName}.`
                 })
             }
-            let status;
-            if(!datas.windowHasFocus) { status = "unfocused" }
-            else if(datas.recording) { status = "recording" }
-            else if(datas.inSession) { status = "connected" }
-            else { status = "none" }
 
-            this.setComputerStatusHTML(computerElement, status)
+            if(datas.windowHasFocus) { computerElement.classList.remove("status__unfocused")
+            } else { computerElement.classList.add("status__unfocused") }
+
+            if(!datas.recording) { computerElement.classList.remove("status__recording")
+            } else { computerElement.classList.add("status__recording") }
+
+            if(!datas.inSession) { computerElement.classList.remove("status__connected")
+            } else { computerElement.classList.add("status__connected") }
 
             let content = computerElement.getElementsByClassName("content")[0]
             content.getElementsByClassName("studentLastname")[0].textContent = datas.loginInformations.lastname
             content.getElementsByClassName("studentFirstname")[0].textContent = datas.loginInformations.firstname
             content.getElementsByClassName("computerName")[0].textContent = datas.computerName
             content.getElementsByClassName("recordCount")[0].textContent = datas.recordCount
-
-
+            content.getElementsByClassName("recordTime")[0].textContent = datas.recordTime ?? "00:00:00"
 
         } catch(e) {
             BasicF.toastError(e)
         }
         
     }
-
-    setComputerStatusHTML(computerElement, status) {
-        /*
-        status:
-        none/default : fond gris
-        connected: font vert
-        recording: font orange
-        unfocused: font rouge
-        */
-        computerElement.classList.remove("status__none")
-        computerElement.classList.remove("status__connected")
-        computerElement.classList.remove("status__recording")
-        computerElement.classList.remove("status__unfocused")
-
-        let statusName = (["none","connected","recording","unfocused"].includes(status) ? status : "none")
-        // console.log("statusName:",statusName)
-        computerElement.classList.add(`status__${statusName}`)
-        
-
-    }
-
 
     loadLessons() {
         let path = "./application/datas/lessons.json"

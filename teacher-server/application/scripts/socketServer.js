@@ -48,6 +48,25 @@ function _startServer(LaboFactice, datas) {
     }
 
 
+
+    On update datas:
+    
+        {
+            computerName: systemOS.hostname(),
+            windowHasFocus: windowHasFocus,
+            loginInformations: {
+                logged: logged,
+                firstname: firstname,
+                lastname: lastname,
+                birthday: birthday,
+            },
+            inSession: LaboFactice.sessionAlreadyStarted, // boolean
+            recording: LaboFactice.currentlyRecording, // boolean
+            recordingTime: LaboFactice.recordTimeFormated_temp // 00:00:00,
+            recordCount: number
+        }
+
+
     */
     
     var http = require('http');
@@ -66,18 +85,8 @@ function _startServer(LaboFactice, datas) {
 
     let connectedComputers = {
         /*"name": {
+            socketID: "",
             computerName: systemOS.hostname(),
-            windowHasFocus: windowHasFocus,
-            loginInformations: {
-                logged: logged,
-                firstname: firstname,
-                lastname: lastname,
-                birthday: birthday,
-            },
-            inSession: LaboFactice.sessionAlreadyStarted, // boolean
-            recording: LaboFactice.currentlyRecording, // boolean
-            recordingTime: LaboFactice.recordTimeFormated_temp // 00:00:00,
-            recordCount: number
         }*/
     }
     
@@ -102,8 +111,9 @@ function _startServer(LaboFactice, datas) {
             }
 
             connectedComputers[datas.computerName] = {
+                socketID: socket.id,
                 computerName: datas.computerName ??  "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
-                windowHasFocus: (typeof datas.windowHasFocus == 'boolean' ? datas.windowHasFocus : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+                /*windowHasFocus: (typeof datas.windowHasFocus == 'boolean' ? datas.windowHasFocus : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                 loginInformations: {
                     logged: (typeof datas.loginInformations.logged == 'boolean' ? datas.loginInformations.logged : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                     firstname: datas.loginInformations.firstname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
@@ -111,8 +121,8 @@ function _startServer(LaboFactice, datas) {
                     birthday: datas.loginInformations.birthday ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                 },
                 inSession: (typeof datas.inSession == 'boolean' ? datas.inSession : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
-                socketID: socket.id,
                 recordCount: (typeof datas.recordCount == 'number' ? datas.recordCount : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE")
+                */
             }
             LaboFactice.setConnectedComputers(connectedComputers)
         })
@@ -126,6 +136,11 @@ function _startServer(LaboFactice, datas) {
                 content: `[${socket_id}] Disconnected.`,
                 svg: "error"
             })
+
+            connectedComputers = connectedComputers.filter(x => {
+                return
+            })
+            
         })
         socket.on("test",() => {
             console.log("test ok")
@@ -149,7 +164,25 @@ function _startServer(LaboFactice, datas) {
 
         socket.on("LaboFactice_realTimeDatas", (datas) => {
             //console.log("LaboFactice_realTimeDatas:",datas)
-            LaboFactice.realTimeUpdate(datas)
+            try {
+                let sanitizedDatas = {
+                    computerName: datas.computerName,
+                    windowHasFocus: datas.windowHasFocus,
+                    loginInformations: {
+                        logged: datas.loginInformations.logged,
+                        firstname: datas.loginInformations.firstname,
+                        lastname: datas.loginInformations.lastname,
+                        birthday: datas.loginInformations.birthday,
+                    },
+                    inSession: datas.inSession, // boolean
+                    recording: datas.recording, // boolean
+                    recordTime: datas.recordTime, // 00:00:00,
+                    recordCount: datas.recordCount // number
+                }
+                LaboFactice.realTimeUpdate(sanitizedDatas)
+            } catch(e) {
+                console.warn(e)
+            }
         })
 
 

@@ -155,6 +155,13 @@ class new_Application {
         document.getElementById("application").hidden = false
     }
 
+
+    displayComputerNamePage() {
+        let systemOS = require("os")
+        document.getElementById("infoboxComputerName").hidden = false
+        document.getElementById("infoboxComputerName_computerName").textContent = `${systemOS.hostname()}`
+    }
+
     async init() {
 
         let randomWaiting = {

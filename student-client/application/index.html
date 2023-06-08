@@ -12,27 +12,11 @@
 
     <div id="mainbox">
 
-        <div id="loadingbox">
-            <div id="loadingboxCodeBackground" class="code">
-            </div>
-            <div class="loading_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
+        <div id="infoboxComputerName">
+            <div class="infovox_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    
-                    <div class="loading_logo" style="
-                    width:50px;
-                    height:50px;
-                    padding: 10px;
-                    margin: 5px;
-                    border: 3px solid transparent;
-                    border-top: 3px solid white;
-                    border-radius: 100%;
-                    animation-name: loading_logo;
-                    animation-duration: 1s;
-                    animation-iteration-count: infinite;
-                    animation-timing-function: linear;
-                    "></div>
-                    <h2 id="loadingboxText">Chargement ...</h2>
-                    <button class="bcss-b-prim" onclick="window.location.reload()">Recharger</button>
+                    <h2 id="infoboxComputerName_computerName" class="text">.<h2>
+                    <button class="bcss-b-simple" onclick="document.getElementById('infoboxComputerName').hidden=true">Fermer</button>
                 </div>
             </div>
         </div>
@@ -50,6 +34,17 @@
                     <button class="bcss-b-simple-warn" style="margin: 0px auto;margin-top: 10px;">Attendre le début de la session</button>
                     <div class="buttons">
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingbox" hidden="">
+            <div id="loadingboxCodeBackground" class="code"></div>
+            <div class="loading_mid_popup bcss-centerdiv bcss-centercontentdivmiddle">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+
+                    <h2 id="loadingboxText">En attente de la session ...</h2>
+                    <button class="bcss-b-prim" onclick="window.location.reload()">Recharger</button>
                 </div>
             </div>
         </div>

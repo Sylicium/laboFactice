@@ -1,12 +1,12 @@
 
-function _startClient(LaboFactice, datas) {
+function _startClient(LaboFactice, startClientDatas) {
 
-    console.log("_startClient: datas:",datas)
+    console.log("_startClient: datas:",startClientDatas)
     const { io } = require("socket.io-client");
     let systemOS = require("os")
     var win = nw.Window.get();
 
-    let socket = io.connect(`http://${datas.ip}:${datas.port}`);
+    let socket = io.connect(`http://${startClientDatas.ip}:${startClientDatas.port}`);
 
     socket.on("connect", () => {
         console.log("[socket] Connected with ID:",socket.id);
@@ -34,7 +34,7 @@ function _startClient(LaboFactice, datas) {
             loginInformations: LaboFactice.getLoginInformations(),
             inSession: LaboFactice.sessionAlreadyStarted,
             recording: LaboFactice.currentlyRecording,
-            recordingTime: LaboFactice.recordTimeFormated_temp,
+            recordTime: LaboFactice.recordTimeFormated_temp,
             recordCount: LaboFactice.records.length // ATTENTION, NE PAS ENVOYER JUSTE RECORDS SINON CA ENVOIE AUSSI LE BLOB ET DATA URL --> SURCHARGE RESEAU
         }
     }

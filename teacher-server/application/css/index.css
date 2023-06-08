@@ -225,7 +225,7 @@ div.addLesson_center_box .title {
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.status__none { background-color: lightgray; }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.status__recording { background-color: orange; }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.status__connected { background-color: lightgreen; }
-#application div.app div.inSession div.flex div.left div.classCanva div.computer.status__unfocused { background-color: red; }
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.status__unfocused { background-color: red !important; }
 
 
 
