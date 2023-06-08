@@ -160,6 +160,7 @@ class new_Application {
         let systemOS = require("os")
         document.getElementById("infoboxComputerName").hidden = false
         document.getElementById("infoboxComputerName_computerName").textContent = `${systemOS.hostname()}`
+        BasicF.toas 
     }
 
     async init() {
