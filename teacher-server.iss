@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "LaboFacticeTeacher"
-#define MyAppVersion "alpha-1.1.0"
+#define MyAppVersion "alpha-1.4.0"
 #define MyAppPublisher "Sylicium Corp"
 #define MyAppExeName "LaboFactice Teacher.exe"
 
