@@ -427,8 +427,10 @@ class new_Application {
 
                 this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
 
-                this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, the_datas)
-                window.close()
+                await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, the_datas)
+                setTimeout(() => {
+                    window.close()
+                }, 3*1000)
             } catch(e) {
                 BasicF.toastError(e)
                 BasicF.toast({
