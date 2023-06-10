@@ -5,3 +5,92 @@
 [0527/013914.656:ERROR:main_dll_loader_win.cc(118)] Failed to load NW DLL from C:\Users\33695\Documents\GitHub\laboFactice\student-client\nw.dll: %1 n’est pas une application Win32 valide. (0xC1)
 [0527/013932.705:ERROR:main_dll_loader_win.cc(118)] Failed to load NW DLL from C:\Users\33695\Documents\GitHub\laboFactice\student-client\nw.dll: %1 n’est pas une application Win32 valide. (0xC1)
 [0527/013957.869:ERROR:main_dll_loader_win.cc(118)] Failed to load NW DLL from C:\Users\33695\Documents\GitHub\laboFactice\student-client\nw.dll: %1 n’est pas une application Win32 valide. (0xC1)
+[0610/203931.728:ERROR:main_dll_loader_win.cc(118)] Failed to load NW DLL from C:\Users\Sylicium\Documents\GitHub\laboFactice\teacher-server\nw.dll: Le module spécifié est introuvable. (0x7E)
+[0610/204042.997:ERROR:crashpad_client_win.cc(786)] not connected
+[0610/204043.153:FATAL:sandbox.cc(62)] Check failed: result == SBOX_ALL_OK. 
+Backtrace:
+	IsSandboxedProcess [0x00007FFDAAF28C62+986274]
+	IsSandboxedProcess [0x00007FFDABC22892+14592210]
+	IsSandboxedProcess [0x00007FFDAAFA3C28+1490024]
+	IsSandboxedProcess [0x00007FFDAAFA4C60+1494176]
+	IsSandboxedProcess [0x00007FFDAAFBA271+1581745]
+	IsSandboxedProcess [0x00007FFDAB68DE52+8740498]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19E308+20044024]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D553+20040515]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D65C+20040780]
+	ChromeMain [0x00007FFDA6EC129A+666]
+	GetPakFileHashes [0x00007FF6E01828A7+6311]
+	GetPakFileHashes [0x00007FF6E01818DB+2267]
+	GetHandleVerifier [0x00007FF6E02D2F92+937810]
+	BaseThreadInitThunk [0x00007FFE06027614+20]
+	RtlUserThreadStart [0x00007FFE06BA26A1+33]
+Crash keys:
+  "switch-1" = "--user-data-dir=C:\Users\Sylicium\AppData\Local\teacher-server\U"
+  "num-switches" = "1"
+
+[0610/204046.252:ERROR:crashpad_client_win.cc(786)] not connected
+[0610/204046.369:FATAL:sandbox.cc(62)] Check failed: result == SBOX_ALL_OK. 
+Backtrace:
+	IsSandboxedProcess [0x00007FFDAAF28C62+986274]
+	IsSandboxedProcess [0x00007FFDABC22892+14592210]
+	IsSandboxedProcess [0x00007FFDAAFA3C28+1490024]
+	IsSandboxedProcess [0x00007FFDAAFA4C60+1494176]
+	IsSandboxedProcess [0x00007FFDAAFBA271+1581745]
+	IsSandboxedProcess [0x00007FFDAB68DE52+8740498]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19E308+20044024]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D553+20040515]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D65C+20040780]
+	ChromeMain [0x00007FFDA6EC129A+666]
+	GetPakFileHashes [0x00007FF6E01828A7+6311]
+	GetPakFileHashes [0x00007FF6E01818DB+2267]
+	GetHandleVerifier [0x00007FF6E02D2F92+937810]
+	BaseThreadInitThunk [0x00007FFE06027614+20]
+	RtlUserThreadStart [0x00007FFE06BA26A1+33]
+Crash keys:
+  "switch-1" = "--user-data-dir=C:\Users\Sylicium\AppData\Local\teacher-server\U"
+  "num-switches" = "1"
+
+[0610/204140.368:ERROR:crashpad_client_win.cc(786)] not connected
+[0610/204140.489:FATAL:sandbox.cc(62)] Check failed: result == SBOX_ALL_OK. 
+Backtrace:
+	IsSandboxedProcess [0x00007FFDAAF28C62+986274]
+	IsSandboxedProcess [0x00007FFDABC22892+14592210]
+	IsSandboxedProcess [0x00007FFDAAFA3C28+1490024]
+	IsSandboxedProcess [0x00007FFDAAFA4C60+1494176]
+	IsSandboxedProcess [0x00007FFDAAFBA271+1581745]
+	IsSandboxedProcess [0x00007FFDAB68DE52+8740498]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19E308+20044024]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D553+20040515]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D65C+20040780]
+	ChromeMain [0x00007FFDA6EC129A+666]
+	GetPakFileHashes [0x00007FF6E01828A7+6311]
+	GetPakFileHashes [0x00007FF6E01818DB+2267]
+	GetHandleVerifier [0x00007FF6E02D2F92+937810]
+	BaseThreadInitThunk [0x00007FFE06027614+20]
+	RtlUserThreadStart [0x00007FFE06BA26A1+33]
+Crash keys:
+  "switch-1" = "--user-data-dir=C:\Users\Sylicium\AppData\Local\teacher-server\U"
+  "num-switches" = "1"
+
+[0610/204143.179:ERROR:crashpad_client_win.cc(786)] not connected
+[0610/204143.256:FATAL:sandbox.cc(62)] Check failed: result == SBOX_ALL_OK. 
+Backtrace:
+	IsSandboxedProcess [0x00007FFDAAF28C62+986274]
+	IsSandboxedProcess [0x00007FFDABC22892+14592210]
+	IsSandboxedProcess [0x00007FFDAAFA3C28+1490024]
+	IsSandboxedProcess [0x00007FFDAAFA4C60+1494176]
+	IsSandboxedProcess [0x00007FFDAAFBA271+1581745]
+	IsSandboxedProcess [0x00007FFDAB68DE52+8740498]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19E308+20044024]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D553+20040515]
+	v8::internal::SetupIsolateDelegate::SetupBuiltins [0x00007FFDAA19D65C+20040780]
+	ChromeMain [0x00007FFDA6EC129A+666]
+	GetPakFileHashes [0x00007FF6E01828A7+6311]
+	GetPakFileHashes [0x00007FF6E01818DB+2267]
+	GetHandleVerifier [0x00007FF6E02D2F92+937810]
+	BaseThreadInitThunk [0x00007FFE06027614+20]
+	RtlUserThreadStart [0x00007FFE06BA26A1+33]
+Crash keys:
+  "switch-1" = "--user-data-dir=C:\Users\Sylicium\AppData\Local\teacher-server\U"
+  "num-switches" = "1"
+

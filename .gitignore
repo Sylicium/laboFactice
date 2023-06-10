@@ -1,7 +1,6 @@
 .env
 /localModules/
 /logs/*
-student-client/nw.dll
 /node_modules/
 /teacher-server/node_modules/
 /student-client/node_modules/
