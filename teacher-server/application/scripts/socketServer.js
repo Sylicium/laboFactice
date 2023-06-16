@@ -63,7 +63,8 @@ function _startServer(LaboFactice, datas) {
             inSession: LaboFactice.sessionAlreadyStarted, // boolean
             recording: LaboFactice.currentlyRecording, // boolean
             recordingTime: LaboFactice.recordTimeFormated_temp // 00:00:00,
-            recordCount: number
+            recordCount: number,
+            callTeacher: boolean,
         }
 
 
@@ -179,7 +180,8 @@ function _startServer(LaboFactice, datas) {
                     inSession: datas.inSession, // boolean
                     recording: datas.recording, // boolean
                     recordTime: datas.recordTime, // 00:00:00,
-                    recordCount: datas.recordCount // number
+                    recordCount: datas.recordCount, // number
+                    callTeacher: datas.callTeacher
                 }
                 LaboFactice.realTimeUpdate(sanitizedDatas)
             } catch(e) {

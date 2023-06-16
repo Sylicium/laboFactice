@@ -209,12 +209,12 @@ class new_Application {
                     the_computer_elem.id = `canvaComputer_Name_${computer.computerName}`
                     the_computer_elem.className = "computer hovertext noselect"
                     the_computer_elem.innerHTML = `${computer.number}<div class="content">
-                    <span><span class="studentLastname">Loading</span> <span class="studentFirstname">...</span></span>
+                    <span><span class="studentLastname">Not</span> <span class="studentFirstname">connected</span></span>
                     <span class="recordBar recording"><span class="recordTime">00:00:00</span> <span class="inRecordMention">• (Recording)</span></span>
                     <span><span class="recordCount">0</span> Enregistrements</span>
                     <span><span class="computerName">PC: ${computer.computerName}</span></span>
                 </div>
-                <div class="msgBubble">💬</div>*
+                <div class="msgBubble">💬</div>
                 <div class="callTeacher">🤚</div>`
                     the_computer_elem.style = `top:${computer.top}px;left:${computer.left}px;`
                     if(canvaElement.height < computer.top || canvaElement.width < computer.left) {
@@ -451,7 +451,8 @@ class new_Application {
             inSession: boolean
             recording: boolean
             recordTime: "00:00:00
-            recordCount"
+            recordCount": number,
+            callTeacher: false
         }
         */
         try {
@@ -487,6 +488,13 @@ class new_Application {
             content.getElementsByClassName("computerName")[0].textContent = datas.computerName
             content.getElementsByClassName("recordCount")[0].textContent = datas.recordCount
             content.getElementsByClassName("recordTime")[0].textContent = datas.recordTime ?? "00:00:00"
+            let callTeacherElem = computerElement.getElementsByClassName("callTeacher")[0]
+            if(datas.callTeacher) {
+                callTeacherElem.classList.add("active")
+            } else {
+                callTeacherElem.classList.remove("active")
+            }
+
 
         } catch(e) {
             BasicF.toastError(e)

@@ -51,7 +51,8 @@ function _startClient(LaboFactice, startClientDatas) {
             inSession: LaboFactice.sessionAlreadyStarted,
             recording: LaboFactice.currentlyRecording,
             recordTime: LaboFactice.recordTimeFormated_temp,
-            recordCount: LaboFactice.records.length // ATTENTION, NE PAS ENVOYER JUSTE RECORDS SINON CA ENVOIE AUSSI LE BLOB ET DATA URL --> SURCHARGE RESEAU
+            recordCount: LaboFactice.records.length, // ATTENTION, NE PAS ENVOYER JUSTE RECORDS SINON CA ENVOIE AUSSI LE BLOB ET DATA URL --> SURCHARGE RESEAU
+            callTeacher: LaboFactice.callingTeacher,
         }
     }
 

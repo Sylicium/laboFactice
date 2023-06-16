@@ -299,12 +299,13 @@ div.addLesson_center_box .title {
 }
 
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .callTeacher {
+    visibility: hidden;
     position: absolute;
     top: -8px;
     left: -13px;
 }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .msgBubble.active,.callTeacher.active {
-    visibility: visible;
+    visibility: visible !important;
 }
 
   

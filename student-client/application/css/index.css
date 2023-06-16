@@ -35,6 +35,12 @@ div.login_center_box .title {
 #application div.bandeau {
     box-shadow: 0px 0px 16px -5px black;
 }
+#application div.bandeau button#callTeacherButton:not(.active) {
+    
+}
+#application div.bandeau button#callTeacherButton.active {
+    background-color: #4c41e6;
+}
 #application div.app {
     display: flex;
     flex-direction: row;

@@ -1,8 +1,6 @@
 
-const { BADFAMILY } = require("dns");
 const fs = require("fs")
 const { exec } = require('node:child_process');
-const { basename } = require("path");
 var bonjour = require('bonjour')()
 
 const config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
@@ -143,7 +141,7 @@ class new_Application {
             birthday: null,
         }
         this.sessionAlreadyStarted = false
-
+        this.callingTeacher = false
         
         BasicF.Cooldowns.create("sendTchatMessage_z8mA0d21k", 1200)
 
@@ -557,6 +555,30 @@ class new_Application {
         inputElement.value = ""
         
         
+    }
+
+
+    callTeacher(toggleTo=undefined) {
+        let callButtonElem = document.getElementById("callTeacherButton")
+        if(toggleTo == true) {
+            callButtonElem.textContent = "Appeller le professeur"
+            callButtonElem.classList.remove("active")
+            return this.callingTeacher = false
+        } else if(toggleTo == false) {
+            callButtonElem.textContent = "🔊 Professeur appellé"
+            callButtonElem.classList.add("active")
+            return this.callingTeacher = true
+        } else {
+            if(callButtonElem.classList.contains("active")) {
+                callButtonElem.textContent = "Appeller le professeur"
+                callButtonElem.classList.remove("active")
+                return this.callingTeacher = false
+            } else {
+                callButtonElem.textContent = "🔊 Professeur appellé"
+                callButtonElem.classList.add("active")
+                return this.callingTeacher = true
+            }
+        }
     }
 }
 
