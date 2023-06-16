@@ -98,6 +98,7 @@ class new_Application {
     constructor() {
         this.initialized = false
         this.records = []
+        this.maxRecordCount = 5
         this.selectedRecordUUID = null
         this.recordButton = document.getElementById("recordButton")
         this.currentlyRecording = false;
@@ -413,19 +414,19 @@ class new_Application {
         let confirmation = confirm("Vous allez quitter LaboFactice, tout ce qui n'as pas été enregistré / envoyé sera perdu !")
         if(confirmation) {
             try {
-                let the_datas = LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)[0]
+                let selectedRecordDatas = LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)[0]
                 
                 
                 /*
                 fs.writeFileSync(`${process.env.USERPROFILE}\\Desktop\\LaboFactice_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.txt')}`, JSON.stringify({
                     loginInformations: this.loginInformations,
-                    record: the_datas
+                    record: selectedRecordDatas
                 }))
                 */
 
-                this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
+                this.downloadFromBlob(await dataURLToBlob(selectedRecordDatas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
 
-                await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, the_datas)
+                await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, selectedRecordDatas)
                 setTimeout(() => {
                     window.close()
                 }, 3*1000)
@@ -463,6 +464,11 @@ class new_Application {
     }
 
     startNewRecord() {
+        if(this.records.length == this.maxRecordCount) return BasicF.toast({
+            type: "warn",
+            title: `Nombre maximum d'enregistrement atteint: ${this.maxRecordCount}`,
+            content: `Supprimez des enregistrements avant d'en enregistrer de nouveau.`
+        })
         console.log("[LaboFactice:startNewRecord()] Starting record.")
         this.currentlyRecording = true;
         this.recordButton.className = "bcss-b-simple-danger"
