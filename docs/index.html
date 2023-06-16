@@ -6,7 +6,7 @@
     <style>
       /* Mise en forme CSS */
       body {
-        font-family: Arial, sans-serif;
+        font-family: Calibri, Arial, sans-serif;
         margin: 0;
         padding: 0;
       }
@@ -41,6 +41,48 @@
         padding: 20px;
         text-align: center;
       }
+.btn-download {
+  background-color: #007bff;
+  border: none;
+  color: #ffffff;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display:flex;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+margin: 4px auto;
+}
+table {
+      border-collapse: collapse;
+    max-width: 70vw;
+    margin: 50px auto;
+    }
+    th, td {
+      text-align: center;
+      padding: 8px;
+      font-size: 16px;
+    }
+td.specificity {
+text-align: right;
+}
+    th {
+      background-color: #333;
+      color: white;
+	width: fit-content;
+min-width: 100px;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .check {
+      color: green;
+      font-weight: bold;
+    }
+    .cross {
+      color: red;
+    }
     </style>
   </head>
   <body>
@@ -61,6 +103,118 @@
         <p>Etant un jeune développeur et pas Google, vos données vous regardent et je n'en collecte strictement aucune !</p>
       </section>
     </main>
+	<button class="btn-download">Télécharger dès maintenant</button>
+
+<table>
+    <tr>
+      <th>Spécificités</th>
+      <th>Gratuit</th>
+      <th>Premium</th>
+      <th>Entreprise</th>
+    </tr>
+    <tr>
+      <td class="specificity">Nombre maximum d'élèves en simultanés</td>
+      <td class="">10</td>
+      <td class="">30</td>
+      <td class="">100</td>
+    </tr>
+    <tr>
+      <td class="specificity">Nombre maximum d'enregistrement par élève</td>
+      <td class="">3</td>
+      <td class="">5</td>
+      <td class="">15</td>
+    </tr>
+    <tr>
+      <td class="specificity">Exportation des enregistrement (mp3)</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Détection de sortie de l'appli de l'élève</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Minuteur de leçon</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Visualisation des placements des ordinateurs</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Différent type de fichier pour les leçons</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Fonction d'appel du professeur</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Salon textuel élève/professeur</td>
+      <td class="cross"></td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Question QCM</td>
+      <td class="cross"></td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Choix entre réponse textuelle ou vocale</td>
+      <td class="cross"></td>
+      <td class="check">✔</td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Envoi automatique des enregistrements</td>
+      <td class="cross"></td>
+      <td class="cross"></td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Possibilité de reprendre une session en cours</td>
+      <td class="cross"></td>
+      <td class="cross"></td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Connexion vocale en direct avec l'élève</td>
+      <td class="cross"></td>
+      <td class="cross"></td>
+      <td class="check">✔</td>
+    </tr>
+    <tr>
+      <td class="specificity">Tarif de la licence</td>
+      <td class="">0€</td>
+      <td class="">149€</td>
+      <td class="">499€</td>
+    </tr>
+    <tr>
+      <td class="specificity">Durée de la licence</td>
+      <td class="">1 mois</td>
+      <td class="">12 mois</td>
+      <td class="">A vie</td>
+    </tr>
+    <tr>
+      <td class="specificity">Nombre d'utilisation de la licence</td>
+      <td class="">1</td>
+      <td class="">10</td>
+      <td class="">500</td>
+    </tr>
+  </table>
     <footer>
       <p>© 2023 Sylicium - Tous droits réservés.</p>
     </footer>
