@@ -117,12 +117,14 @@ function _startServer(LaboFactice, datas) {
                 socketID: socket.id,
                 computerName: datas.computerName ??  "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                 /*windowHasFocus: (typeof datas.windowHasFocus == 'boolean' ? datas.windowHasFocus : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+                */
                 loginInformations: {
                     logged: (typeof datas.loginInformations.logged == 'boolean' ? datas.loginInformations.logged : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                     firstname: datas.loginInformations.firstname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                     lastname: datas.loginInformations.lastname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                     birthday: datas.loginInformations.birthday ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                 },
+                /*
                 inSession: (typeof datas.inSession == 'boolean' ? datas.inSession : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                 recordCount: (typeof datas.recordCount == 'number' ? datas.recordCount : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE")
                 */
@@ -187,6 +189,26 @@ function _startServer(LaboFactice, datas) {
             } catch(e) {
                 console.warn(e)
             }
+        })
+
+        socket.on(`LaboFactice_sendMyRecord`, datas => {
+            /*
+            {
+                lessonUUID: datas.lessonUUID,
+                record: recordToSend,
+            }
+            */
+            let computer = connectedComputers.filter(x => { return x.socketID == socket.id})[0]
+            let text = `${computer.loginInformations.firstname} ${computer.loginInformations.lastname}.mp4`
+
+            var dataurl= "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+            var regex = /^data:.+\/(.+);base64,(.*)$/;
+            var matches = dataurl.match(regex);
+            var ext = matches[1];
+            var data = matches[2];
+            var buffer = Buffer.from(data, 'base64');
+            fs.writeFileSync('data.' + ext, buffer);
+
         })
 
 

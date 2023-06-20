@@ -26,6 +26,13 @@ function _startClient(LaboFactice, startClientDatas) {
 
     })
 
+    socket.on("LaboFactice_endSession", datas => {
+        let sanitarized_datas = {
+            timeOut: parseInt(timeOut)
+        }
+        LaboFactice.endSession(sanitarized_datas)
+    })
+
 
     socket.on("LaboFactice_displayComputerNamePage", (classPlaces) => {
         let myComputer = classPlaces.filter(x => { return x.computerName == systemOS.hostname()})

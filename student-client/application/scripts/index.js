@@ -169,6 +169,53 @@ class new_Application {
     }
 
 
+    async endSession(datas) {
+        /* datas: {
+            timeOut?: ms,
+            lessonUUID: "zrjbezrg"
+        }
+        */
+        try {
+            BasicF.toast({
+                type: "warn",
+                title: `Fermeture de l'application.`,
+                content: `L'application va se fermer dans ${BasicF.formatTime(datas.timeOut, "hh heures mm minutes et ss secondes.")}`,
+                svg: "info",
+                timeout: datas.timeOut ?? 10*1000,
+            })
+            await sleep(datas.timeOut ?? 0)
+            let recordToSend = {};
+            if(this.records.length > 0) {
+                let last_record = JSON.parse(JSON.stringify(this.records[this.records.length-1]))
+                let selectedRecordDatas = LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)
+                if(selectedRecordDatas.length > 0) {
+                    recordToSend = selectedRecordDatas[0]
+                } else {
+                    recordToSend = last_record
+                }
+            }
+            await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, {
+                lessonUUID: datas.lessonUUID,
+                record: recordToSend,
+            })
+
+            BasicF.toast({
+                type: "warn",
+                title: "Fermeture de l'application.",
+                content: "L'application va se fermer."
+            })
+
+            setTimeout(() => {  
+                window.close()
+            }, 1.5*1000)
+            
+        } catch(e) {
+            BasicF.toastError(e)
+        }
+
+    }
+
+
     displayComputerNamePage(computerNumber) {
         console.log("displayComputerNamePage !!!")
         let systemOS = require("os")
@@ -543,7 +590,7 @@ class new_Application {
             return BasicF.toast({
                 type: "warn",
                 title: `Ralentissez entre les actions !`,
-                content: `Attendez encore ${cooldown.remaining}`
+                content: `Attendez encore ${(cooldown.remaining/1000).toFixed(1)}s`
             })
         }
 

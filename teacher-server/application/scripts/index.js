@@ -149,6 +149,8 @@ class new_Application {
         this.Bonjour_service = undefined;
         let that = this
         this.lessons = []
+        this.currentStartedLesson = null;
+        this.currentStartedLessonUUID = null;
 
         function* counter() {
             let c=0
@@ -407,6 +409,9 @@ class new_Application {
         }
         console.log(`Starting server/session with lessons data=`,lesson)
 
+        this.currentStartedLesson = lesson
+        this.currentStartedLessonUUID = lesson.UUID
+
         if(this.SOCKET_IO != undefined) {
             BasicF.toast({
                 type: "error",
@@ -435,6 +440,16 @@ class new_Application {
 
 
         
+    }
+
+    socketEmitEndSession() {
+        let datas = {
+            lessonUUID: currentStartedLesson,
+            timeOut: 0 // milliseconde, le temps avant d'arrêter la session.
+        }
+        this.SOCKET_IO.emit("LaboFactice_endSession", datas)
+        this.currentStartedLesson = null;
+        this.currentStartedLessonUUID = null;
     }
 
     realTimeUpdate(datas) {
