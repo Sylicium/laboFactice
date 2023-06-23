@@ -444,7 +444,7 @@ class new_Application {
 
     socketEmitEndSession() {
         let datas = {
-            lessonUUID: currentStartedLesson,
+            lesson: this.currentStartedLesson,
             timeOut: 0 // milliseconde, le temps avant d'arrêter la session.
         }
         this.SOCKET_IO.emit("LaboFactice_endSession", datas)

@@ -39,6 +39,8 @@ function _startServer() {
 
 */
 
+const fs = require('fs');
+
 function _startServer(LaboFactice, datas) {
     /*
 
@@ -88,6 +90,12 @@ function _startServer(LaboFactice, datas) {
         /*"name": {
             socketID: "",
             computerName: systemOS.hostname(),
+            loginInformations: {
+                logged: (typeof datas.loginInformations.logged == 'boolean' ? datas.loginInformations.logged : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+                firstname: datas.loginInformations.firstname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+                lastname: datas.loginInformations.lastname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+                birthday: datas.loginInformations.birthday ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
+            },
         }*/
     }
     
@@ -194,21 +202,38 @@ function _startServer(LaboFactice, datas) {
         socket.on(`LaboFactice_sendMyRecord`, datas => {
             /*
             {
-                lessonUUID: datas.lessonUUID,
+                lesson: datas.lesson,
                 record: recordToSend,
+                recordsCount: this.records.length
             }
             */
+            BasicF.toast({
+                type: "info",
+                title: `Enregistrement reçu.`,
+                content: `De: ${computer.loginInformations.lastname.toUpperCase()} ${computer.loginInformations.firstname}`,
+            })
+
             let computer = connectedComputers.filter(x => { return x.socketID == socket.id})[0]
             let text = `${computer.loginInformations.firstname} ${computer.loginInformations.lastname}.mp4`
 
-            var dataurl= "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
-            var regex = /^data:.+\/(.+);base64,(.*)$/;
-            var matches = dataurl.match(regex);
-            var ext = matches[1];
-            var data = matches[2];
-            var buffer = Buffer.from(data, 'base64');
-            fs.writeFileSync('data.' + ext, buffer);
+            let main_path = `${process.env.USERPROFILE}\\Documents\\LaboFactice\\Records\\${lesson.class}\\${lesson.UUID}`
+            if(!fs.existsSync(main_path)) fs.mkdirSync(main_path, { recursive: true })
 
+            let file_name = `${computer.loginInformations.lastname.toUpperCase()}_${computer.loginInformations.firstname}__${BasicF.formatDate(Date.now(), "DD-MM-YYYY_hhhmm")}`
+
+            if(recordsCount > 0) {
+                var dataurl= "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+                var regex = /^data:.+\/(.+);base64,(.*)$/;
+                var matches = dataurl.match(regex);
+                var ext = matches[1];
+                var data = matches[2];
+                var buffer = Buffer.from(data, 'base64');
+                // fs.writeFileSync('data.' + ext, buffer);
+                fs.writeFileSync(`${main_path}\\${file_name}.mp3`, buffer)
+                
+            } else {
+                fs.writeFileSync(`${main_path}\\${file_name}.txt`, `L'élève a participé à la session mais aucun enregistrement n'existait pour être envoyé.`)
+            }
         })
 
 

@@ -172,7 +172,7 @@ class new_Application {
     async endSession(datas) {
         /* datas: {
             timeOut?: ms,
-            lessonUUID: "zrjbezrg"
+            lesson: {}
         }
         */
         try {
@@ -195,8 +195,9 @@ class new_Application {
                 }
             }
             await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, {
-                lessonUUID: datas.lessonUUID,
+                lesson: datas.lesson,
                 record: recordToSend,
+                recordsCount: this.records.length
             })
 
             BasicF.toast({
