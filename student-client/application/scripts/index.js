@@ -183,7 +183,7 @@ class new_Application {
                 svg: "info",
                 timeout: datas.timeOut ?? 10*1000,
             })
-            await sleep(datas.timeOut ?? 0)
+            await BasicF.sleep(datas.timeOut ?? 0)
             let recordToSend = {};
             if(this.records.length > 0) {
                 let last_record = JSON.parse(JSON.stringify(this.records[this.records.length-1]))

@@ -22,14 +22,16 @@ function _startClient(LaboFactice, startClientDatas) {
         console.log("[socket] Disconnected.");
     });
 
-    socket.on("LaboFactice", (datas) => {
+    socket.on("LaboFactice", (datas) => { 
 
     })
 
     socket.on("LaboFactice_endSession", datas => {
         let sanitarized_datas = {
-            timeOut: parseInt(timeOut)
+            lesson: datas.lesson,
+            timeOut: parseInt(datas.timeOut)
         }
+        if(!LaboFactice.loginInformations.logged) return console.log(`[socket:LaboFactice_endSession] > Returning because user is not logged yet.`)
         LaboFactice.endSession(sanitarized_datas)
     })
 
