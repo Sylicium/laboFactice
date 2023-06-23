@@ -694,7 +694,7 @@ class new_Application {
                 var buffer = Buffer.from(data, 'base64');
                 console.log("debugAMZ: 7")
                 // fs.writeFileSync('data.' + ext, buffer);
-                fs.writeFileSync(`${main_path}\\${file_name}.mp3`, buffer)
+                fs.writeFileSync(`${main_path}\\${file_name}.${ext}`, buffer)
                 console.log("debugAMZ: 8")
                 
             } else {
