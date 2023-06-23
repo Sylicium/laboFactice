@@ -196,6 +196,7 @@ class new_Application {
             }
             await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, {
                 lesson: datas.lesson,
+                loginInformations: this.loginInformations,
                 record: recordToSend,
                 recordsCount: this.records.length
             })

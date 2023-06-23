@@ -653,6 +653,60 @@ class new_Application {
             lessonList.appendChild(lessonElem)
         }
     }
+
+
+    recordSentFromStudent(datas) {
+        /*
+        {
+            lesson: datas.lesson,
+            loginInformations: loginInformations,
+            record: recordToSend,
+            recordsCount: this.records.length
+        }
+
+        */
+        try {
+            console.log(`[socket:LaboFactice_sendMyRecord] Received datas:`,datas)
+            console.log("debugAMZ: 1")
+            BasicF.toast({
+                type: "info",
+                title: `Enregistrement reçu.`,
+                content: `De: ${datas.loginInformations.lastname.toUpperCase()} ${datas.loginInformations.firstname}`,
+            })
+            console.log("debugAMZ: 2")
+
+            let main_path = `${process.env.USERPROFILE}\\Documents\\LaboFactice\\Records\\${datas.lesson.class}\\${datas.lesson.UUID}`
+            console.log("debugAMZ: 3")
+            if(!fs.existsSync(main_path)) fs.mkdirSync(main_path, { recursive: true })
+
+            console.log("debugAMZ: 4")
+            let file_name = `${datas.loginInformations.lastname.toUpperCase()}_${datas.loginInformations.firstname}__${BasicF.formatDate(Date.now(), "DD-MM-YYYY_hhhmm")}`
+
+            console.log("debugAMZ: 5")
+            if(datas.recordsCount > 0) {
+                console.log("debugAMZ: 6")
+                //var dataurl= "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+                var dataurl = datas.record.dataURL
+                var regex = /^data:.+\/(.+);base64,(.*)$/;
+                var matches = dataurl.match(regex);
+                var ext = matches[1];
+                var data = matches[2];
+                var buffer = Buffer.from(data, 'base64');
+                console.log("debugAMZ: 7")
+                // fs.writeFileSync('data.' + ext, buffer);
+                fs.writeFileSync(`${main_path}\\${file_name}.mp3`, buffer)
+                console.log("debugAMZ: 8")
+                
+            } else {
+                console.log("debugAMZ: 9")
+                fs.writeFileSync(`${main_path}\\${file_name}.txt`, `L'élève a participé à la session mais aucun enregistrement n'existait pour être envoyé.`)
+            }
+            console.log("debugAMZ: 10")
+        } catch(e) {
+            console.log("debugAMZ: 11")
+            BasicF.toastError(e)
+        }
+    }
 }
 
 
