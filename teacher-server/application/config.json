@@ -1,5 +1,6 @@
 {
     "adminPassword": "prof",
+    "defaultSavePath": "{{USERPROFILE}}\\Documents\\LaboFactice\\",
     "teacherLogin": {
         "identifiant": "lacompa",
         "password": "lacompa"
@@ -12,9 +13,9 @@
     "classPlaces": [
         {
             "number": 1,
-            "computerName": "pcQuentinMarie",
-            "top": 429,
-            "left": 28
+            "computerName": "PC-ASKO-02",
+            "top": 538,
+            "left": 266
         }
     ]
 }

@@ -39,6 +39,27 @@ function _startClient(LaboFactice, startClientDatas) {
     })
 
 
+    socket.on("LaboFactive_stopSession", datas => {
+        
+        BasicF.toast({
+            type: "info",
+            svg: "warn",
+            title: "Fermeture de session",
+            content: `La session va bientôt se terminer. Terminez vos enregistrements et selectionnez en un pour ne pas perdre votre travail.`,
+            timeout: 30*1000,
+        })
+        BasicF.toast({
+            type: "info",
+            svg: "warn",
+            title: "Fermeture de session",
+            content: `La session va se fermer automatiquement dans ${BasicF.formatTime(datas,secondsBeforeEnd*1000, "hh heures mm minutes et ss secondes")} (à ${BasicF.formatDate(new Date(datas.endTimestamp), "hh:mm:ss")})`,
+            timeout: datas.secondsBeforeEnd*1000,
+        })
+
+
+    })
+
+
     let windowHasFocus = true
 
 

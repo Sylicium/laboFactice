@@ -1,14 +1,83 @@
 
-const { BADFAMILY } = require("dns");
 const fs = require("fs")
 const { exec } = require('node:child_process');
-const { basename } = require("path");
 var bonjour = require('bonjour')()
 
-const config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
+let config = undefined;
+let LaboFactice = undefined;
+window.onload = () => {
+
 function saveConfig() {
     fs.writeFileSync(`./application/config.json`, JSON.stringify(config, null, 4))
 }
+
+try {
+    config = JSON.parse(fs.readFileSync("./application/config.json","UTF-8"))
+} catch(e) {
+    BasicF.toast({
+        type: "error",
+        svg: "error",
+        title: "Impossible de démarrer l'application",
+        content: "Le fichier de configuration a été endommagé.",
+        hideProgressBar: true,
+        autoHide: false
+    })
+    let cfg = {
+        "adminPassword":"prof",
+        "note_exemple": false,
+        "note": "Après avoir configuré l'application, assurez vous de changer la valeur ci dessous de 'true' à 'false', sans aucun guillement tel que l'exemple au dessus, afin d'éviter un message d'erreur récurrent.",
+        "configHasBeenReload": true,
+        "bonjourService": {
+            "port": 7890,
+            "type": "LaboFacticeLanServiceName"
+        }
+    }
+    fs.writeFileSync(`./application/config.json`, JSON.stringify(cfg, null, 4))
+}
+try {
+    if(!fs.existsSync(`./application/config.json`)) {
+        throw Error("Config File does not exists.")
+    }
+} catch(e) {
+    BasicF.toast({
+        type: "error",
+        svg: "error",
+        title: "Impossible de démarrer l'application",
+        content: "Fichier de configuration introuvable.",
+        hideProgressBar: true,
+        autoHide: false
+    })
+    let cfg = {
+        "adminPassword":"prof",
+        "note_exemple": false,
+        "note": "Après avoir configuré l'application, assurez vous de changer la valeur ci dessous de 'true' à 'false', sans aucun guillement tel que l'exemple au dessus, afin d'éviter un message d'erreur récurrent.",
+        "configHasBeenReload": true,
+        "bonjourService": {
+            "port": 7890,
+            "type": "LaboFacticeLanServiceName"
+        }
+    }
+    fs.writeFileSync(`./application/config.json`, JSON.stringify(cfg, null, 4))
+}
+if(config.configHasBeenReload) {
+    BasicF.toast({
+        type: "warn",
+        svg: "warn",
+        title: "Réparation exigée",
+        content: "Le fichier de configuration a été recréé car il n'existait plus. Les paramètres ont étés réinitialisés par défaut, merci de reconfigurer l'application pour un bon fonctionnement.",
+        hideProgressBar: true,
+        autoHide: false
+    })
+    BasicF.toast({
+        type: "warn",
+        title: "Loop ?",
+        content: "Le message ci-dessus apparait souvent ? Assurez vous que la configuration comporte la propriété 'configHasBeenReload' à la valeur 'false', sans guillemets.",
+        hideProgressBar: true,
+        autoHide: false
+    })
+}
+
+
 
 function openConfigFile() {
     let password = prompt(`Entrez le mot de passe Administrateur de LaboFactice:`)
@@ -76,6 +145,7 @@ let GLOBAL_ = {
 class new_LoadingPageBackground {
     constructor() {
         this.element = document.getElementById("loadingboxCodeBackground")
+        this.maxChildrens = 50
     }
     clear() {
         this.element.innerHTML = ""
@@ -84,6 +154,9 @@ class new_LoadingPageBackground {
         let codeElem = document.createElement("p")
         codeElem.textContent = `${text}`
         this.element.appendChild(codeElem)
+        while([...this.element.children].length > this.maxChildrens) {
+            this.element.removeChild(this.element.firstChild)
+        }
         this.element.scrollTop = this.element.scrollHeight;
     }
     appendTextList(textList) {
@@ -110,7 +183,7 @@ class new_Application {
             GLOBAL_.rec.ondataavailable = e => {
               this.TEMP_.audioChunks.push(e.data);
               if (GLOBAL_.rec.state == "inactive"){
-                let blob = new Blob(this.TEMP_.audioChunks,{type:'audio/mp3'});
+                let blob = new Blob(this.TEMP_.audioChunks,{type:'audio/wav'});
                 this.appendNewRecord(blob)
                 //recordedAudioDownloadButton.src = URL.createObjectURL(blob);
                 this.TEMP_.sendData(blob)
@@ -191,8 +264,11 @@ class new_Application {
         LoadingPageBackground.appendText(`Starting Bonjour browser...`)
         // await BasicF.sleep(BasicF.randFloat(randomWaiting.min,randomWaiting.max))
         let browser = bonjour.findOne({ type: config.bonjourService.type })
+        LoadingPageBackground.appendText(`let browser = bonjour.findOne({ type: config.bonjourService.type })`)
         await BasicF.sleep(200)
+        LoadingPageBackground.appendText(`await BasicF.sleep(200)`)
         this.Bonjour_browser = browser
+        LoadingPageBackground.appendText(`this.Bonjour_browser = browser`)
         this.Bonjour_browser_getIpConfig = () => {
             console.log("browser.services[0]:",browser.services, config.bonjourService.type)
             return {
@@ -203,13 +279,18 @@ class new_Application {
                 "hostname": browser.services[0].host
             }
         }
+        LoadingPageBackground.appendText(`this.Bonjour_browser_getIpConfig = () => { ... }`)
         try {
+            LoadingPageBackground.appendText(`Trying this.SOCKET_IO = _startClient(...)`)
             this.SOCKET_IO = _startClient(LaboFactice, this.Bonjour_browser_getIpConfig())
+            LoadingPageBackground.appendText(`  Success`)
         } catch(e) {
+            LoadingPageBackground.appendText(`  Failure`)
             LoadingPageBackground.appendText(`Crashed while initializing LaboFactice: ${e}`)
             await BasicF.sleep(500)
             console.log("Crashed during LaboFactice init()")
             console.log(e)
+            LoadingPageBackground.appendText(`Starting 1500ms timeout.`)
             setTimeout(() => {
                 this.init()
             }, 1500)
@@ -414,8 +495,11 @@ class new_Application {
         }
         let confirmation = confirm("Vous allez quitter LaboFactice, tout ce qui n'as pas été enregistré / envoyé sera perdu !")
         if(confirmation) {
+            let the_datas = {
+                record: LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)[0],
+                loginInformations: this.loginInformations
+            }
             try {
-                let the_datas = LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)[0]
                 
                 
                 /*
@@ -425,29 +509,54 @@ class new_Application {
                 }))
                 */
 
-                this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
+                //this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.wav')}`)
+
+                new File(await dataURLToBlob(the_datas.record.dataURL), "C:\\Users\\Sylicium\\Downloads\\test_file.mp3")
+
+                // fs.writeFileSync("test_ouput.mp3",Buffer.from(await (await dataURLToBlob(the_datas.dataURL)).arrayBuffer(), 'binary').toString("base64"), {encoding: "base64"} )
 
                 await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, the_datas)
-                setTimeout(() => {
-                    window.close()
-                }, 3*1000)
-            } catch(e) {
-                BasicF.toastError(e)
                 BasicF.toast({
-                    type: "warn",
-                    title: "Erreur d'envoie au professeur",
-                    content: "L'envoie de l'enregistrement a échoué. Les enregistrements ont été sauvegardés sur le Bureau.\nL'application va se fermer dans 10 secondes.",
+                    type: "success",
+                    title: "Envoyé !",
+                    content: "L'enregistrement a bien été envoyé au professeur.",
                     hideProgressBar: true,
                     autoHide: false
                 })
-                fs.writeFileSync(`${process.env.USERPROFILE}\\Desktop\\LaboFactice_saveError${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.txt')}`, JSON.stringify({
-                    loginInformations: this.loginInformations,
-                    selectedRecordUUID: this.selectedRecordUUID,
-                    records: this.records
-                }))
-                this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
                 setTimeout(() => {
                     window.close()
+                }, 1000)
+            } catch(e) {
+                console.log(e)
+                BasicF.toastError(e)
+                await BasicF.toast({
+                    type: "warn",
+                    title: "Erreur d'envoie au professeur",
+                    content: "L'envoie de l'enregistrement a échoué. Les enregistrements vont se sauvegarder sur le Bureau, merci d'en informer le professeur.\nL'application va se fermer dans 10 secondes.",
+                    hideProgressBar: true,
+                    autoHide: false
+                })
+                let fileName = `${process.env.USERPROFILE}\\Desktop\\LaboFactice_saveError${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss')}`
+
+                setTimeout(() => {
+                    if(confirm("L'envoie de l'enregistrement a échoué. Souhaitez vous enregistrer les données des enregistrements au format JSON également ?\n\nSi vous ne savez pas, selectionnez 'Annuler'.")) {
+                        fs.writeFileSync(fileName+".txt", JSON.stringify({
+                            loginInformations: this.loginInformations,
+                            selectedRecordUUID: this.selectedRecordUUID,
+                            records: this.records
+                        }))
+                    }
+                }, 1500)
+
+                try {
+                    fs.writeFileSync(fileName+".wav",Buffer.from(await (await dataURLToBlob(the_datas.record.dataURL)).arrayBuffer(), 'binary').toString("base64"), {encoding: "base64"} )
+                } catch(err) {
+                    console.log(err)
+                }
+
+                //this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.mp3')}`)
+                setTimeout(() => {
+                    // window.close()
                 }, 10*1000)
                 
             }
@@ -590,5 +699,8 @@ PRODUCTION:
 
 */
 
-let LaboFactice = new new_Application()
+LaboFactice = new new_Application()
 LaboFactice.init()
+
+
+}

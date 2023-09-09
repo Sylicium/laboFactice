@@ -14,9 +14,10 @@ try {
 } catch(e) {
     config = {
         "adminPassword":"prof",
+        "defaultSavePath": "{{USERPROFILE}}\\Documents\\LaboFactice\\",
         "teacherLogin": {
-            "identifiant": "lacompa",
-            "password": "lacompa"
+            "identifiant": "prof",
+            "password": "prof"
         },
         "bonjourService": {
             "name": "LaboFacticeLan",
@@ -149,6 +150,7 @@ class new_Application {
         this.Bonjour_service = undefined;
         let that = this
         this.lessons = []
+        this.currentLessonUUID = undefined
 
         function* counter() {
             let c=0
@@ -160,7 +162,7 @@ class new_Application {
 
         this.counter = counter()
 
-        this.connectedComputers = {}
+        this.connectedComputers = []
 
         this.CanvaComputersFunctions = {
             makeCanvaDraggable: (canvaElement) => {
@@ -321,8 +323,8 @@ class new_Application {
         }
         let countr = counter()
         let l = []
-        for(let key in this.connectedComputers) {
-            let obj = this.connectedComputers[key]
+        for(let i in this.connectedComputers) {
+            let obj = this.connectedComputers[i]
             l.push({
                 "number": countr.next().value,
                 "computerName": obj.computerName,
@@ -407,6 +409,8 @@ class new_Application {
         }
         console.log(`Starting server/session with lessons data=`,lesson)
 
+        this.currentLessonUUID == lessonUUID
+
         if(this.SOCKET_IO != undefined) {
             BasicF.toast({
                 type: "error",
@@ -432,15 +436,46 @@ class new_Application {
                 BasicF.toastError(e)
             }
         }
-
-
         
+    }
+
+    stopSession() {
+        let num = NaN
+        let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
+        num = parseInt(the_prompt)
+        while(num == NaN) {
+            BasicF.toast({
+                type: "error",
+                title: "Valeur invalide",
+                content: `La valeur renseignée n'est pas un nombre de seconde valide.`,
+                timeout: 10*1000,
+            })
+            let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
+            num = parseInt(the_prompt)
+            if(num > 300) {
+                if(!confirm(`Le nombre de seconde renseigné équivaut à ${BasicF.formatTime(num*1000, "hhhmmmsss")}, êtes vous sûr ?`)) {
+                    num = NaN
+                }
+            }
+            if(num < 30) {
+                if(!confirm(`Le nombre de seconde renseigné est inférieur à 30 secondes (${BasicF.formatTime(num*1000, "sss")}), êtes vous sûr ?`)) {
+                    num = NaN
+                }
+            }
+        }
+
+        this.SOCKET_IO.emit("LaboFactive_stopSession", {
+            timestamp: Date.now(),
+            secondsBeforeEnd: num,
+            endTimestamp: Date.now() + num*1000
+        })
     }
 
     realTimeUpdate(datas) {
         /*
         datas = {
             computerName: string,
+            isDisconnected: boolean,
             windowHasFocus: boolean,
             loginInformations: {
                 logged: logged, // boolean
@@ -456,12 +491,16 @@ class new_Application {
         */
         try {
             console.log("update:",datas)
+
             let computer = config.classPlaces.filter(x => { return x.computerName == datas.computerName})
             if(computer.length == 0) {
                 Logger.warn(`[Application.realTimeUpdate()]: Failed updating computer '${datas.computerName}': Computer not in list. Try doing a new export of connected computers.`)
                 return;
             }
             computer = computer[0]
+
+            console.log("computer:",computer)
+
             let computerElement = document.getElementById(`canvaComputer_Name_${computer.computerName}`)
             if(!computerElement || (!computerElement.className && computerElement.className != "")) {
                 Logger.debug(`Realtime update failed. Datas:`,datas)
@@ -472,6 +511,14 @@ class new_Application {
                 })
             }
 
+            if(datas.isDisconnected == true) { // datas et pas computer car le computer est stocké ici alors que le datas est envoyé du serveur.
+                computerElement.classList.remove("status__connected")
+                computerElement.classList.remove("status__unfocused")
+                computerElement.classList.remove("status__recording")
+                computerElement.classList.add("status__none")
+                return;
+            }
+            
             if(datas.windowHasFocus) { computerElement.classList.remove("status__unfocused")
             } else { computerElement.classList.add("status__unfocused") }
 

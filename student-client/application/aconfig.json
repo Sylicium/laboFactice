@@ -1,0 +1,8 @@
+{
+    "adminPassword":"prof",
+    "configHasBeenReload": false,
+    "bonjourService": {
+        "port": 7890,
+        "type": "LaboFacticeLanServiceName"
+    }
+}
