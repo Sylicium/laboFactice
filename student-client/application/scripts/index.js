@@ -493,11 +493,17 @@ class new_Application {
         if(this.selectedRecordUUID == UUID) this.selectedRecordUUID = null
     }
 
-    async quit() {
-        if(this.selectedRecordUUID == null) {
+    async quit(forceQuit=false) {
+        if(!forceQuit && this.selectedRecordUUID == null) {
             return alert(`Vous devez selectionner une piste audio avant de quitter.`)
         }
-        let confirmation = confirm("Vous allez quitter LaboFactice, tout ce qui n'as pas été enregistré / envoyé sera perdu !")
+        let confirmation;
+        if(forceQuit) {
+            confirmation = true
+        } else {
+            confirmation = confirm("Vous allez quitter LaboFactice, tout ce qui n'as pas été enregistré / envoyé sera perdu !")
+        }
+        
         if(confirmation) {
             let the_datas = {
                 record: LaboFactice.records.filter(x => x.UUID == LaboFactice.selectedRecordUUID)[0],

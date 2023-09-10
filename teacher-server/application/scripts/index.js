@@ -503,24 +503,24 @@ class new_Application {
         let num = NaN
         let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
         num = parseInt(the_prompt)
-        while(num == NaN) {
+        confirm(`Vous avez entré: ${num} ${typeof num} ${num == NaN}`)
+        if(`${num}` == "NaN") {
             BasicF.toast({
                 type: "error",
                 title: "Valeur invalide",
                 content: `La valeur renseignée n'est pas un nombre de seconde valide.`,
                 timeout: 10*1000,
             })
-            let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
-            num = parseInt(the_prompt)
-            if(num > 300) {
-                if(!confirm(`Le nombre de seconde renseigné équivaut à ${BasicF.formatTime(num*1000, "hhhmmmsss")}, êtes vous sûr ?`)) {
-                    num = NaN
-                }
+            return;
+        }
+        if(num > 300) {
+            if(!confirm(`Le nombre de seconde renseigné équivaut à ${BasicF.formatTime(num*1000, "hhhmmmsss")}, êtes vous sûr ?`)) {
+                return;
             }
-            if(num < 30) {
-                if(!confirm(`Le nombre de seconde renseigné est inférieur à 30 secondes (${BasicF.formatTime(num*1000, "sss")}), êtes vous sûr ?`)) {
-                    num = NaN
-                }
+        }
+        if(num < 30) {
+            if(!confirm(`Le nombre de seconde renseigné est inférieur à 30 secondes (${BasicF.formatTime(num*1000, "sss")}), êtes vous sûr ?`)) {
+                return;
             }
         }
 
