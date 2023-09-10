@@ -128,6 +128,7 @@ div.addLesson_center_box .title {
 
 #application > div.menu > div.box {
     display: flex;
+    flex-wrap: wrap;
     background-color: white;
     justify-content: center;
     align-items: center;
@@ -324,4 +325,18 @@ div.addLesson_center_box .title {
 }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext.status__recording div.content span > span.inRecordMention {
     visibility: inherit;
+}
+
+
+/***** connectedUsersList *****/
+
+#application div.app div.connectedUsersList table#connectedUsersList_listElement {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    width: fit-content;
+}
+
+#application div.app div.connectedUsersList table#connectedUsersList_listElement thead tr td {
+
 }

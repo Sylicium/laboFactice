@@ -296,6 +296,19 @@ class new_Application {
         LoadingPage.stop()
         ApplicationLoadingToast.remove()
         BasicF.toast({ type:"success", svg:"success", title: "Chargement terminé", content: `Merci d'utiliser LaboFactice !\nDéveloppé par Sylicium`, autoHide:true, timeout: 5000})
+
+
+        this.refreshConnectedUsersList_listElement_interval = setInterval(() => {
+            try {
+                let elem = document.getElementById("connectedUsersList_tbody")
+                elem.innerHTML = ""
+                let the_html = ``
+                for(let i in this.connectedComputers) {}
+            } catch(e){
+                console.log(e)
+            }
+        }, 2000)
+
     }
     
     getName() { return this.ApplicationInfos.name}

@@ -193,6 +193,7 @@ class new_Application {
         this.TEMP_ = {
             sendData: (datas) => {},
         }
+        this.internal_socket = BasicF.createNewEmitter()
 
         function* recordCounter() {
             let c=0
@@ -361,6 +362,8 @@ class new_Application {
             lastname: login_lastname.value,
             birthday: `${realDate}`,
         }
+
+        this.internal_socket.emit("logged", (Date.now()))
     
         LoadingPageBackground.clear()
         LoadingPage.start('En attente de la session ...')

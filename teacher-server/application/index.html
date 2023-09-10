@@ -87,6 +87,9 @@
                     <div class="sessionHistory" onclick="LaboFactice.selectMenu('inSession')">
                         <h2>En session des sessions</h2>
                     </div>
+                    <div class="connectedUsersList" onclick="LaboFactice.selectMenu('connectedUsersList')">
+                        <h2>Liste des utilisateurs connectés</h2>
+                    </div>
                 </div>
             </div>
 
@@ -159,6 +162,32 @@
                 </div>
                 <div class="sessionHistory" hidden>
                     <h2>Historique des sessions</h2>
+                </div>
+                <div class="connectedUsersList" hidden>
+                    <h2>Utilisateurs connectés:</h2>
+
+                    <table id="connectedUsersList_listElement">
+                        <thead> </thead>
+                        <tbody id="connectedUsersList_tbody">
+                            <tr class="user">
+                                <td class="birthday"><b>Date de naissance</b></td>
+                                <td class="lastname"><b>Nom</b></td>
+                                <td class="firstname"><b>Prénom</b></td>
+                            </tr>
+                            <tr class="user">
+                                <td class="birthday">30/09/2004</td>
+                                <td class="lastname">VIDALaaaaaaaaaaaaaa</td>
+                                <td class="firstname">Quentin</td>
+                            </tr>
+                            <tr class="user">
+                                <td class="birthday">30/09/2004</td>
+                                <td class="lastname">VIDAL</td>
+                                <td class="firstname">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
                 </div>
             </div>
 

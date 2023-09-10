@@ -14,6 +14,10 @@ function _startClient(LaboFactice, startClientDatas) {
         socket.emit("LaboFactice_connected", getRealtimeDatas())
     });
 
+    LaboFactice.internal_socket.on("logged", timestamp => {
+        socket.emit("LaboFactice_connected", getRealtimeDatas())
+    })
+
     socket.on("LaboFactice_loadLesson", (lessonDatas) => {
         LaboFactice.loadLesson(lessonDatas)
     })
