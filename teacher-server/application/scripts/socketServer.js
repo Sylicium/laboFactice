@@ -221,10 +221,11 @@ function _startServer(LaboFactice, datas) {
 
         socket.on("LaboFactice_sendMyRecord", async datas => {
             console.log("LaboFactice_sendMyRecord:", datas)
-            
+
+            let datePrefix = BasicF.formatDate(Date.now(), "YYYYMMDD")            
 
             let filePath = `${config.defaultSavePath}`.replace("{{USERPROFILE}}", process.env.USERPROFILE) + `${LaboFactice.currentLessonUUID}\\`
-            let fileName = `${datas.loginInformations.lastname}_${datas.loginInformations.firstname}`
+            let fileName = `${datePrefix}_${datas.loginInformations.lastname}_${datas.loginInformations.firstname}`
             let fileExtension = `.wav`
 
             fs.mkdir(filePath, { recursive: true }, (err) => {
