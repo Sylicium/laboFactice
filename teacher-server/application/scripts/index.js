@@ -151,6 +151,7 @@ class new_Application {
         let that = this
         this.lessons = []
         this.currentLessonUUID = undefined
+        this.internal_socket = BasicF.createNewEmitter()
 
         function* counter() {
             let c=0
@@ -301,14 +302,55 @@ class new_Application {
         this.refreshConnectedUsersList_listElement_interval = setInterval(() => {
             try {
                 let elem = document.getElementById("connectedUsersList_tbody")
+                let computerList = this.connectedComputers
+                computerList.sort(function (a, b) {
+                    if (a.loginInformations.lastname.toUpperCase() < b.loginInformations.lastname.toUpperCase()) {
+                      return -1;
+                    }
+                    if (a.loginInformations.lastname.toUpperCase() > b.loginInformations.lastname.toUpperCase()) {
+                      return 1;
+                    }
+                    return 0;
+                  });
                 elem.innerHTML = ""
-                let the_html = ``
-                for(let i in this.connectedComputers) {}
+                let the_html = [
+                    `<tr class="user">
+                        <td class="firstname"><b>Ordinateur</b></td>
+                        <td class="firstname"><b>SocketID</b></td>
+                        <td class="firstname"><b>Authentifié ?</b></td>
+                        <td class="birthday"><b>Date de naissance</b></td>
+                        <td class="lastname"><b>Nom</b></td>
+                        <td class="firstname"><b>Prénom</b></td>
+                    </tr>`
+                ]
+                for(let i in this.connectedComputers) {
+                    let computer = LaboFactice.connectedComputers[i]
+                    let temp = `<tr class="user">
+                        <td class="computerName">${computer.computerName}</td>
+                        <td class="socketID">${computer.socketID}</td>
+                        <td class="socketID">${computer.loginInformations.logged ? "✅" : "❌"}</td>
+                        <td class="birthday">${computer.loginInformations.birthday}</td>
+                        <td class="lastname">${computer.loginInformations.lastname}</td>
+                        <td class="firstname">${computer.loginInformations.firstname}</td>
+                    </tr>`
+                    the_html.push(temp)
+                }
+                if(the_html.length == 1) {
+                    the_html.push(`<tr class="user">
+                    <td class="computerName">Aucun utilisateur connecté</td>
+                </tr>`)
+                }
+                elem.innerHTML = the_html.join("\n")
+
             } catch(e){
                 console.log(e)
             }
         }, 2000)
 
+
+        this.SOCKET_IO = _startServer(LaboFactice, {
+            port: config.bonjourService.port
+        })
     }
     
     getName() { return this.ApplicationInfos.name}
@@ -422,21 +464,26 @@ class new_Application {
         }
         console.log(`Starting server/session with lessons data=`,lesson)
 
-        this.currentLessonUUID = lessonUUID
-
-        if(this.SOCKET_IO != undefined) {
-            BasicF.toast({
+        /*
+            if(this.SOCKET_IO != undefined) {
+                BasicF.toast({
                 type: "error",
                 svg: "error",
                 title: "Serveur socket.io déjà connecté.",
                 content: `Impossible de démarrer le serveur socket.io car il est déjà démarré.`
             })
+        */
+        if(this.currentLessonUUID != undefined) {
+            BasicF.toast({
+                type: "error",
+                svg: "error",
+                title: "Session deja en cours",
+                content: `Impossible de démarrer une nouvelle session alors qu'une autre est déjà en cours.`
+            })
         } else {
+            this.currentLessonUUID = lessonUUID
             try {
-                this.SOCKET_IO = _startServer(LaboFactice, {
-                    lessonDatas: lesson,
-                    port: config.bonjourService.port
-                })
+                this.internal_socket.emit("startSession", lesson)
                 BasicF.toast({
                     type: "success",
                     svg: "success",
@@ -504,6 +551,10 @@ class new_Application {
         */
         try {
             console.log("update:",datas)
+
+            if(this.currentLessonUUID == undefined) {
+                return console.log(`update cancelled: this.currentLessonUUID is undefined (no lesson running currently)`)
+            }
 
             let computer = config.classPlaces.filter(x => { return x.computerName == datas.computerName})
             if(computer.length == 0) {

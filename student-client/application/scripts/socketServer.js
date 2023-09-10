@@ -10,7 +10,6 @@ function _startClient(LaboFactice, startClientDatas) {
 
     socket.on("connect", () => {
         console.log("[socket] Connected with ID:",socket.id);
-        LaboFactice.startSession()
         socket.emit("LaboFactice_connected", getRealtimeDatas())
     });
 
@@ -20,6 +19,7 @@ function _startClient(LaboFactice, startClientDatas) {
 
     socket.on("LaboFactice_loadLesson", (lessonDatas) => {
         LaboFactice.loadLesson(lessonDatas)
+        LaboFactice.startSession()
     })
 
     socket.on("disconnect", () => {

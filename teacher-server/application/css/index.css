@@ -337,6 +337,9 @@ div.addLesson_center_box .title {
     width: fit-content;
 }
 
-#application div.app div.connectedUsersList table#connectedUsersList_listElement thead tr td {
-
+#application div.app div.connectedUsersList table#connectedUsersList_listElement td {
+    max-width: 300px;
+    overflow: auto;
+    border: 1px solid black;
+    text-align: center;
 }

@@ -44,6 +44,9 @@ async function dataURLToBlob(dataURI) {
 
 
 function _startServer(LaboFactice, datas) {
+
+
+
     /*
 
     datas: {
@@ -83,7 +86,7 @@ function _startServer(LaboFactice, datas) {
     });
 
     httpServer.listen(datas.port, () => {
-        console.log(`[http] Website : localhost:${config.port_http}`)
+        console.log(`[http] Website : localhost:${datas.port}`)
     });
 
     setInterval(() => {
@@ -107,7 +110,9 @@ function _startServer(LaboFactice, datas) {
         })
         let socket_id = socket.id
 
-        socket.emit("LaboFactice_loadLesson", datas.lessonDatas)
+        LaboFactice.internal_socket.on("startSession", lessonDatas => {
+            socket.emit("LaboFactice_loadLesson", lessonDatas)
+        })
 
         socket.on("LaboFactice_connected", (datas) => {
             if(!datas.computerName || typeof datas.windowHasFocus != 'boolean' || typeof datas.loginInformations != 'object' || typeof datas.inSession != 'boolean') {
@@ -172,6 +177,7 @@ function _startServer(LaboFactice, datas) {
                 connectedComputers = connectedComputers.filter(x => {
                     return (x.socketID != socket_id)
                 })
+                LaboFactice.setConnectedComputers(connectedComputers)
     
     
                 function sendDisconnected() {

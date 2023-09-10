@@ -376,6 +376,34 @@ class the_BasicFunctions {
 
     }
 
+    createNewEmitter = () => {
+        /**
+         * class Emitter : Créé un object de socket interne où on peut emit et reçevoir des event (évènements)
+         * @version 1.0.0
+         */
+        class Emitter {
+            constructor() {
+                this.eventsNames = {}
+                
+                this.on = (callName, callback_f) => {
+                    if(typeof callback_f != 'function') throw new Error("Callback must must type of 'function'.")
+                    if(this.eventsNames[callName] == undefined) this.eventsNames[callName] = []
+                    this.eventsNames[callName].push(callback_f)
+                }
+                this.emit = (callName, ...datasList) => {
+                    if(this.eventsNames[callName] == undefined) return;
+                    for(let i in this.eventsNames[callName]) {
+                        try { this.eventsNames[callName][i](...datasList) } catch(e) { console.log(e) }
+                    }
+                }
+                this.removeListeners = (callName) => (this.eventsNames[callName] = [])
+                this.removeAllListeners = () => (this.eventsNames = {})
+                this.countListeners = (callName) => (this.eventsNames[callName] != undefined ? this.eventsNames[callName].length : 0)
+            }
+        }
+        return new Emitter()
+    }
+
 }
 
 
