@@ -71,6 +71,7 @@ function _startClient(LaboFactice, startClientDatas) {
         let win = nw.Window.get();
         return {
             computerName: systemOS.hostname(),
+            callTeacher: LaboFactice.isCallingTeacher,
             windowHasFocus: windowHasFocus,
             loginInformations: LaboFactice.getLoginInformations(),
             inSession: LaboFactice.sessionAlreadyStarted,

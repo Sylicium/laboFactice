@@ -235,6 +235,7 @@ function _startServer(LaboFactice, datas) {
             try {
                 let sanitizedDatas = {
                     computerName: datas.computerName,
+                    callTeacher: datas.callTeacher,
                     windowHasFocus: datas.windowHasFocus,
                     loginInformations: {
                         logged: datas.loginInformations.logged,

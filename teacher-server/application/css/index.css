@@ -225,8 +225,8 @@ div.addLesson_center_box .title {
     box-shadow: 0px 2px 10px 0px #000a;
 }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.status__none { background-color: lightgray; }
-#application div.app div.inSession div.flex div.left div.classCanva div.computer.status__recording { background-color: orange; }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.status__connected { background-color: lightgreen; }
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.status__recording { background-color: orange; }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.status__unfocused { background-color: red !important; }
 
 
@@ -299,11 +299,17 @@ div.addLesson_center_box .title {
     right: -13px;
 }
 
-#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .callTeacher {
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .callTeacher:not(.active) {
     visibility: hidden;
     position: absolute;
     top: -8px;
-    left: -13px;
+    left: -8px;
+}
+#application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .callTeacher.active {
+    visibility: visible;
+    position: absolute;
+    top: -8px;
+    left: -8px;
 }
 #application div.app div.inSession div.flex div.left div.classCanva div.computer.hovertext .msgBubble.active,.callTeacher.active {
     visibility: visible;

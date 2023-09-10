@@ -217,7 +217,7 @@ class new_Application {
                     <span><span class="recordCount">0</span> Enregistrements</span>
                     <span><span class="computerName">PC: ${computer.computerName}</span></span>
                 </div>
-                <div class="msgBubble">💬</div>*
+                <div class="msgBubble">💬</div>
                 <div class="callTeacher">🤚</div>`
                     the_computer_elem.style = `top:${computer.top}px;left:${computer.left}px;`
                     if(canvaElement.height < computer.top || canvaElement.width < computer.left) {
@@ -535,6 +535,7 @@ class new_Application {
         /*
         datas = {
             computerName: string,
+            callTeacher: boolean,
             isDisconnected: boolean,
             windowHasFocus: boolean,
             loginInformations: {
@@ -598,6 +599,13 @@ class new_Application {
             content.getElementsByClassName("computerName")[0].textContent = datas.computerName
             content.getElementsByClassName("recordCount")[0].textContent = datas.recordCount
             content.getElementsByClassName("recordTime")[0].textContent = datas.recordTime ?? "00:00:00"
+
+            let callTeacherElem = computerElement.getElementsByClassName("callTeacher")[0]
+            if(datas.callTeacher) {
+                BasicF.html.toggleClass(callTeacherElem, "active", true)
+            } else {
+                BasicF.html.toggleClass(callTeacherElem, "active", false)
+            }
 
         } catch(e) {
             BasicF.toastError(e)

@@ -148,6 +148,9 @@ class the_BasicFunctions {
                 } else {
                     elem.classList.add(className)
                 }
+            },
+            hasClass: (elem, className) => {
+                return elem.classList.contains(className)
             }
         }
     }

@@ -194,6 +194,7 @@ class new_Application {
             sendData: (datas) => {},
         }
         this.internal_socket = BasicF.createNewEmitter()
+        this.isCallingTeacher = false
 
         function* recordCounter() {
             let c=0
@@ -679,7 +680,24 @@ class new_Application {
 
         inputElement.value = ""
         
-        
+    }
+
+
+    toggleCallTeacher() {
+        let btnElem = document.getElementById("application_button_callTeacher")
+        if(BasicF.html.hasClass(btnElem, "active")) {
+            BasicF.html.toggleClass(btnElem, "active", false)
+            BasicF.html.toggleClass(btnElem, "bcss-b-simple", true)
+            BasicF.html.toggleClass(btnElem, "bcss-b-simple-warn", false)
+            this.isCallingTeacher = false
+            btnElem.textContent = `Appeller le professeur`
+        } else {
+            BasicF.html.toggleClass(btnElem, "active", true)
+            BasicF.html.toggleClass(btnElem, "bcss-b-simple", false)
+            BasicF.html.toggleClass(btnElem, "bcss-b-simple-warn", true)
+            this.isCallingTeacher = true
+            btnElem.textContent = `⌛ Professeur appellé`
+        }
     }
 }
 
