@@ -409,7 +409,7 @@ class new_Application {
         }
         console.log(`Starting server/session with lessons data=`,lesson)
 
-        this.currentLessonUUID == lessonUUID
+        this.currentLessonUUID = lessonUUID
 
         if(this.SOCKET_IO != undefined) {
             BasicF.toast({

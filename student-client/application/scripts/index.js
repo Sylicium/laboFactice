@@ -515,6 +515,17 @@ class new_Application {
 
                 // fs.writeFileSync("test_ouput.mp3",Buffer.from(await (await dataURLToBlob(the_datas.dataURL)).arrayBuffer(), 'binary').toString("base64"), {encoding: "base64"} )
 
+                if(!this.SOCKET_IO.connected) {
+                    BasicF.toast({
+                        type: "error",
+                        title: "Envoie impossible",
+                        content: "Aucune connexion au poste prof. Vérifiez que l'application prof est en cours d'éxécution avant de réessayer.",
+                        hideProgressBar: true,
+                        autoHide: false
+                    })
+                    return;
+                }
+
                 await this.SOCKET_IO.emit(`LaboFactice_sendMyRecord`, the_datas)
                 BasicF.toast({
                     type: "success",

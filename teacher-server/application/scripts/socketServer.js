@@ -194,7 +194,7 @@ function _startServer(LaboFactice, datas) {
             console.log("LaboFactice_sendMyRecord:", datas)
             
 
-            let filePath = `${config.defaultSavePath}`.replace("{{USERPROFILE}}", process.env.USERPROFILE + LaboFactice.currentLessonUUID)
+            let filePath = `${config.defaultSavePath}`.replace("{{USERPROFILE}}", process.env.USERPROFILE) + `${LaboFactice.currentLessonUUID}\\`
             let fileName = `${datas.loginInformations.lastname}_${datas.loginInformations.firstname}`
             let fileExtension = `.wav`
 

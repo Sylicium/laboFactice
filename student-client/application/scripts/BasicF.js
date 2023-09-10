@@ -301,7 +301,7 @@ class the_BasicFunctions {
                 "samedi",
                 "dimanche"
             ]
-            return list[la_date.getDay()-1]
+            return list[la_date.getDay()-1 == -1 ? list.length-1 : la_date.getDay()-1]
         }
 
         let return_string = format.replace("YYYY", la_date.getFullYear()).replace("MM", formatThis(la_date.getMonth()+1)).replace("DDDDD", getDayName()).replace("DD", formatThis(la_date.getDate())).replace("hh", formatThis(la_date.getHours())).replace("mm", formatThis(la_date.getMinutes())).replace("ss", formatThis(la_date.getSeconds()))
