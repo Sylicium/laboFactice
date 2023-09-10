@@ -1,3 +1,4 @@
+const { loadavg } = require('os');
 
 
 /*
@@ -113,6 +114,10 @@ function _startServer(LaboFactice, datas) {
         LaboFactice.internal_socket.on("startSession", lessonDatas => {
             socket.emit("LaboFactice_loadLesson", lessonDatas)
         })
+
+        if(LaboFactice.currentLessonUUID != undefined) {
+            socket.emit("LaboFactice_loadLesson", LaboFactice.getCurrentLessonDatas())
+        }
 
         socket.on("LaboFactice_connected", (datas) => {
             if(!datas.computerName || typeof datas.windowHasFocus != 'boolean' || typeof datas.loginInformations != 'object' || typeof datas.inSession != 'boolean') {

@@ -531,6 +531,13 @@ class new_Application {
         })
     }
 
+
+    getCurrentLessonDatas() {
+        return this.lessons.filter(x => {
+            return x.UUID == this.currentLessonUUID
+        })[0]
+    }
+
     realTimeUpdate(datas) {
         /*
         datas = {
