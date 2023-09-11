@@ -151,6 +151,8 @@ class new_Application {
         let that = this
         this.lessons = []
         this.currentLessonUUID = undefined
+        this.inSession = false;
+        this.currentlyStoppingSession = false;
         this.internal_socket = BasicF.createNewEmitter()
 
         function* counter() {
@@ -482,6 +484,7 @@ class new_Application {
             })
         } else {
             this.currentLessonUUID = lessonUUID
+            this.inSession = true
             try {
                 this.internal_socket.emit("startSession", lesson)
                 BasicF.toast({
@@ -499,9 +502,18 @@ class new_Application {
         
     }
 
-    stopSession() {
+    stopSessionPrompt() {
+        if(!this.inSession) {
+            return BasicF.toast({
+                type: "error",
+                title: "Impossible de terminer la session",
+                content: `Aucune session en cours`,
+                timeout: 10*1000,
+            })
+        }
         let num = NaN
         let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
+        if(the_prompt == undefined) return;
         num = parseInt(the_prompt)
         if(`${num}` == "NaN") {
             BasicF.toast({
@@ -523,11 +535,46 @@ class new_Application {
             }
         }
 
+        this.currentlyStoppingSession = true;
         this.SOCKET_IO.emit("LaboFactive_stopSession", {
             timestamp: Date.now(),
             secondsBeforeEnd: num,
             endTimestamp: Date.now() + num*1000
         })
+        setTimeout(() => {
+            this._stopSession()
+        }, num*1000)
+    }
+
+    _stopSession() {
+        if(!this.inSession) {
+            return BasicF.toast({
+                type: "error",
+                title: "Impossible de terminer la session",
+                content: `Aucune session en cours`,
+                timeout: 10*1000,
+            })
+        }
+
+        if(!this.currentlyStoppingSession) {
+            this.SOCKET_IO.emit("LaboFactive_stopSession", {
+                timestamp: Date.now(),
+                secondsBeforeEnd: 1,
+                endTimestamp: Date.now() + 1*1000
+            })
+        }
+        this.currentlyStoppingSession = false;
+        BasicF.toast({
+            type: "info",
+            title: "Session terminée",
+            content: `La session vient de s'arrêter.`,
+            timeout: 10*1000,
+        })
+        setTimeout(() => {
+            this.inSession = false
+            this.currentLessonUUID = undefined;
+        }, 10*1000)
+        
     }
 
 

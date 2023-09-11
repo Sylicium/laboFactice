@@ -115,7 +115,7 @@ function _startServer(LaboFactice, datas) {
             socket.emit("LaboFactice_loadLesson", lessonDatas)
         })
 
-        if(LaboFactice.currentLessonUUID != undefined) {
+        if(LaboFactice.inSession) {
             socket.emit("LaboFactice_loadLesson", LaboFactice.getCurrentLessonDatas())
         }
 
@@ -221,6 +221,39 @@ function _startServer(LaboFactice, datas) {
 
         socket.on("LaboFactice_sendMyRecord", async datas => {
             console.log("LaboFactice_sendMyRecord:", datas)
+
+            if(!LaboFactice.inSession) {
+                console.log("Not downloading record for user since no session is currently running.")
+                BasicF.toast({
+                    type: "warn",
+                    svg: "warn",
+                    progressBarType: "warn",
+                    title: "Enregistrement perdu",
+                    content: `${datas.loginInformations.lastname} ${datas.loginInformations.firstname} vient d'envoyer un enregistrement. Il n'a pas été sauvegardé sur l'ordinateur car aucune session n'est actuellement en cours.`,
+                    timeout: 30*1000,
+                })
+                return;
+            }
+
+            if(datas.record) {
+                BasicF.toast({
+                    type: "info",
+                    progressBarType: "info",
+                    title: "Enregistrement reçu",
+                    content: `${datas.loginInformations.lastname} ${datas.loginInformations.firstname}`,
+                    timeout: 10*1000,
+                })
+            } else {
+                BasicF.toast({
+                    type: "warn",
+                    svg: "warn",
+                    progressBarType: "warn",
+                    title: "Enregistrement reçu",
+                    content: `${datas.loginInformations.lastname} ${datas.loginInformations.firstname} n'a choisis aucun enregistrement. Aucun enregistrement n'a donc été téléchargé.`,
+                    timeout: 10*1000,
+                })
+                return;
+            }
 
             let datePrefix = BasicF.formatDate(Date.now(), "YYYYMMDD")            
 

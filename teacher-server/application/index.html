@@ -152,7 +152,10 @@
                             <button class="bcss-b-simple-success" onclick='LaboFactice.CanvaComputersFunctions.stopCanvaDraggable(document.getElementById("inSession_computer_canva"), true)'>Sauvegarder</button>
                             <button class="bcss-b-simple" onclick="LaboFactice.importConnectedComputersAndSave()">Import connected computers and save them to config</button>
                             <button class="bcss-b-simple" onclick="LaboFactice.displayComputerNamePages()">Afficher le nom des ordinateurs sur les écrans</button>
-                            <button class="bcss-b-simple-danger" onclick="LaboFactice.stopSession()">Terminer la session</button>
+                            <br>
+                            <h1>Terminer une session fermera l'application des élèves.</h1>
+                            <button class="bcss-b-simple-warn" onclick="LaboFactice.stopSessionPrompt()">Terminer la session avec un compte à rebours</button>
+                            <button class="bcss-b-simple-danger" onclick="LaboFactice._stopSession()">Stopper instantanément la session.</button>
                             
                         </div>
                         <div class="right">

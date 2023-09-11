@@ -521,7 +521,7 @@ class new_Application {
 
                 //this.downloadFromBlob(await dataURLToBlob(the_datas.dataURL),`LaboFactice_${this.loginInformations.lastname}_${this.loginInformations.firstname}_${BasicF.formatDate(Date.now(), 'DD-MM-YYYY_hhhmmmsss.wav')}`)
 
-                new File(await dataURLToBlob(the_datas.record.dataURL), "C:\\Users\\Sylicium\\Downloads\\test_file.mp3")
+                // new File(await dataURLToBlob(the_datas.record.dataURL), "C:\\Users\\Sylicium\\Downloads\\test_file.mp3")
 
                 // fs.writeFileSync("test_ouput.mp3",Buffer.from(await (await dataURLToBlob(the_datas.dataURL)).arrayBuffer(), 'binary').toString("base64"), {encoding: "base64"} )
 
