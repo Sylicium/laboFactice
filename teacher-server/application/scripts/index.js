@@ -503,7 +503,6 @@ class new_Application {
         let num = NaN
         let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
         num = parseInt(the_prompt)
-        confirm(`Vous avez entré: ${num} ${typeof num} ${num == NaN}`)
         if(`${num}` == "NaN") {
             BasicF.toast({
                 type: "error",

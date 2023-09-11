@@ -32,12 +32,13 @@ function _startClient(LaboFactice, startClientDatas) {
 
 
     socket.on("LaboFactice_displayComputerNamePage", (classPlaces) => {
-        let myComputer = classPlaces.filter(x => { return x.computerName == systemOS.hostname()})
+        console.log("classPlaces:",classPlaces)
+        let myComputer = classPlaces.filter(x => { return x.computerName == systemOS.hostname()})[0]
+        console.log("myComputer:",myComputer)
         let myComputerNumber;
-        if(myComputer.length == 0) {
             myComputerNumber = "Error. Computer not found in teacher config.classPlaces"
         } else {
-            myComputerNumber=  myComputer.number
+            myComputerNumber =  myComputer.number
         }
         LaboFactice.displayComputerNamePage(myComputerNumber)
     })
