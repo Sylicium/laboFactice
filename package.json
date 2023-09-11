@@ -4,7 +4,7 @@
   "description": "Une version minimale de LaboPractice développée from scratch.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --testPathPattern=tests --verbose"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "axios": "^1.4.0",
     "bonjour": "^3.5.0",
     "fs": "^0.0.1-security",
+    "jest": "^29.6.4",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1"
   }
