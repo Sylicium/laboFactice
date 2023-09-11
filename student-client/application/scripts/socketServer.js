@@ -36,6 +36,7 @@ function _startClient(LaboFactice, startClientDatas) {
         let myComputer = classPlaces.filter(x => { return x.computerName == systemOS.hostname()})[0]
         console.log("myComputer:",myComputer)
         let myComputerNumber;
+        if(!myComputer) {
             myComputerNumber = "Error. Computer not found in teacher config.classPlaces"
         } else {
             myComputerNumber =  myComputer.number
