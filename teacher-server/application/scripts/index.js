@@ -14,9 +14,10 @@ try {
 } catch(e) {
     config = {
         "adminPassword":"prof",
+        "defaultSavePath": "{{USERPROFILE}}\\Documents\\LaboFactice\\",
         "teacherLogin": {
-            "identifiant": "lacompa",
-            "password": "lacompa"
+            "identifiant": "prof",
+            "password": "prof"
         },
         "bonjourService": {
             "name": "LaboFacticeLan",
@@ -149,6 +150,8 @@ class new_Application {
         this.Bonjour_service = undefined;
         let that = this
         this.lessons = []
+        this.currentLessonUUID = undefined
+        this.internal_socket = BasicF.createNewEmitter()
 
         function* counter() {
             let c=0
@@ -160,7 +163,7 @@ class new_Application {
 
         this.counter = counter()
 
-        this.connectedComputers = {}
+        this.connectedComputers = []
 
         this.CanvaComputersFunctions = {
             makeCanvaDraggable: (canvaElement) => {
@@ -294,6 +297,60 @@ class new_Application {
         LoadingPage.stop()
         ApplicationLoadingToast.remove()
         BasicF.toast({ type:"success", svg:"success", title: "Chargement terminé", content: `Merci d'utiliser LaboFactice !\nDéveloppé par Sylicium`, autoHide:true, timeout: 5000})
+
+
+        this.refreshConnectedUsersList_listElement_interval = setInterval(() => {
+            try {
+                let elem = document.getElementById("connectedUsersList_tbody")
+                let computerList = this.connectedComputers
+                computerList.sort(function (a, b) {
+                    if (a.loginInformations.lastname.toUpperCase() < b.loginInformations.lastname.toUpperCase()) {
+                      return -1;
+                    }
+                    if (a.loginInformations.lastname.toUpperCase() > b.loginInformations.lastname.toUpperCase()) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                elem.innerHTML = ""
+                let the_html = [
+                    `<tr class="user">
+                        <td class="firstname"><b>Ordinateur</b></td>
+                        <td class="firstname"><b>SocketID</b></td>
+                        <td class="firstname"><b>Authentifié ?</b></td>
+                        <td class="birthday"><b>Date de naissance</b></td>
+                        <td class="lastname"><b>Nom</b></td>
+                        <td class="firstname"><b>Prénom</b></td>
+                    </tr>`
+                ]
+                for(let i in this.connectedComputers) {
+                    let computer = LaboFactice.connectedComputers[i]
+                    let temp = `<tr class="user">
+                        <td class="computerName">${computer.computerName}</td>
+                        <td class="socketID">${computer.socketID}</td>
+                        <td class="socketID">${computer.loginInformations.logged ? "✅" : "❌"}</td>
+                        <td class="birthday">${computer.loginInformations.birthday}</td>
+                        <td class="lastname">${computer.loginInformations.lastname}</td>
+                        <td class="firstname">${computer.loginInformations.firstname}</td>
+                    </tr>`
+                    the_html.push(temp)
+                }
+                if(the_html.length == 1) {
+                    the_html.push(`<tr class="user">
+                    <td class="computerName">Aucun utilisateur connecté</td>
+                </tr>`)
+                }
+                elem.innerHTML = the_html.join("\n")
+
+            } catch(e){
+                console.log(e)
+            }
+        }, 2000)
+
+
+        this.SOCKET_IO = _startServer(LaboFactice, {
+            port: config.bonjourService.port
+        })
     }
     
     getName() { return this.ApplicationInfos.name}
@@ -321,8 +378,8 @@ class new_Application {
         }
         let countr = counter()
         let l = []
-        for(let key in this.connectedComputers) {
-            let obj = this.connectedComputers[key]
+        for(let i in this.connectedComputers) {
+            let obj = this.connectedComputers[i]
             l.push({
                 "number": countr.next().value,
                 "computerName": obj.computerName,
@@ -407,19 +464,26 @@ class new_Application {
         }
         console.log(`Starting server/session with lessons data=`,lesson)
 
-        if(this.SOCKET_IO != undefined) {
-            BasicF.toast({
+        /*
+            if(this.SOCKET_IO != undefined) {
+                BasicF.toast({
                 type: "error",
                 svg: "error",
                 title: "Serveur socket.io déjà connecté.",
                 content: `Impossible de démarrer le serveur socket.io car il est déjà démarré.`
             })
+        */
+        if(this.currentLessonUUID != undefined) {
+            BasicF.toast({
+                type: "error",
+                svg: "error",
+                title: "Session deja en cours",
+                content: `Impossible de démarrer une nouvelle session alors qu'une autre est déjà en cours.`
+            })
         } else {
+            this.currentLessonUUID = lessonUUID
             try {
-                this.SOCKET_IO = _startServer(LaboFactice, {
-                    lessonDatas: lesson,
-                    port: config.bonjourService.port
-                })
+                this.internal_socket.emit("startSession", lesson)
                 BasicF.toast({
                     type: "success",
                     svg: "success",
@@ -432,15 +496,54 @@ class new_Application {
                 BasicF.toastError(e)
             }
         }
-
-
         
+    }
+
+    stopSession() {
+        let num = NaN
+        let the_prompt = prompt("Dans combien de seconde voulez vous que la session se coupe ?\nQuand la session session se coupe toutes les données non enregistrées par les utilisateurs seront définitivement perdues.")
+        num = parseInt(the_prompt)
+        confirm(`Vous avez entré: ${num} ${typeof num} ${num == NaN}`)
+        if(`${num}` == "NaN") {
+            BasicF.toast({
+                type: "error",
+                title: "Valeur invalide",
+                content: `La valeur renseignée n'est pas un nombre de seconde valide.`,
+                timeout: 10*1000,
+            })
+            return;
+        }
+        if(num > 300) {
+            if(!confirm(`Le nombre de seconde renseigné équivaut à ${BasicF.formatTime(num*1000, "hhhmmmsss")}, êtes vous sûr ?`)) {
+                return;
+            }
+        }
+        if(num < 30) {
+            if(!confirm(`Le nombre de seconde renseigné est inférieur à 30 secondes (${BasicF.formatTime(num*1000, "sss")}), êtes vous sûr ?`)) {
+                return;
+            }
+        }
+
+        this.SOCKET_IO.emit("LaboFactive_stopSession", {
+            timestamp: Date.now(),
+            secondsBeforeEnd: num,
+            endTimestamp: Date.now() + num*1000
+        })
+    }
+
+
+    getCurrentLessonDatas() {
+        return this.lessons.filter(x => {
+            return x.UUID == this.currentLessonUUID
+        })[0]
     }
 
     realTimeUpdate(datas) {
         /*
         datas = {
             computerName: string,
+            callTeacher: boolean,
+            isDisconnected: boolean,
             windowHasFocus: boolean,
             loginInformations: {
                 logged: logged, // boolean
@@ -457,12 +560,20 @@ class new_Application {
         */
         try {
             console.log("update:",datas)
+
+            if(this.currentLessonUUID == undefined) {
+                return console.log(`update cancelled: this.currentLessonUUID is undefined (no lesson running currently)`)
+            }
+
             let computer = config.classPlaces.filter(x => { return x.computerName == datas.computerName})
             if(computer.length == 0) {
                 Logger.warn(`[Application.realTimeUpdate()]: Failed updating computer '${datas.computerName}': Computer not in list. Try doing a new export of connected computers.`)
                 return;
             }
             computer = computer[0]
+
+            console.log("computer:",computer)
+
             let computerElement = document.getElementById(`canvaComputer_Name_${computer.computerName}`)
             if(!computerElement || (!computerElement.className && computerElement.className != "")) {
                 Logger.debug(`Realtime update failed. Datas:`,datas)
@@ -473,6 +584,14 @@ class new_Application {
                 })
             }
 
+            if(datas.isDisconnected == true) { // datas et pas computer car le computer est stocké ici alors que le datas est envoyé du serveur.
+                computerElement.classList.remove("status__connected")
+                computerElement.classList.remove("status__unfocused")
+                computerElement.classList.remove("status__recording")
+                computerElement.classList.add("status__none")
+                return;
+            }
+            
             if(datas.windowHasFocus) { computerElement.classList.remove("status__unfocused")
             } else { computerElement.classList.add("status__unfocused") }
 
@@ -495,6 +614,13 @@ class new_Application {
                 callTeacherElem.classList.remove("active")
             }
 
+
+            let callTeacherElem = computerElement.getElementsByClassName("callTeacher")[0]
+            if(datas.callTeacher) {
+                BasicF.html.toggleClass(callTeacherElem, "active", true)
+            } else {
+                BasicF.html.toggleClass(callTeacherElem, "active", false)
+            }
 
         } catch(e) {
             BasicF.toastError(e)

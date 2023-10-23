@@ -10,12 +10,16 @@ function _startClient(LaboFactice, startClientDatas) {
 
     socket.on("connect", () => {
         console.log("[socket] Connected with ID:",socket.id);
-        LaboFactice.startSession()
         socket.emit("LaboFactice_connected", getRealtimeDatas())
     });
 
+    LaboFactice.internal_socket.on("logged", timestamp => {
+        socket.emit("LaboFactice_connected", getRealtimeDatas())
+    })
+
     socket.on("LaboFactice_loadLesson", (lessonDatas) => {
         LaboFactice.loadLesson(lessonDatas)
+        LaboFactice.startSession()
     })
 
     socket.on("disconnect", () => {
@@ -39,6 +43,43 @@ function _startClient(LaboFactice, startClientDatas) {
     })
 
 
+    socket.on("LaboFactive_stopSession", datas => {
+        
+        BasicF.toast({
+            type: "info",
+            svg: "warn",
+            title: "Fermeture de session",
+            content: `La session va bientôt se terminer. Terminez vos enregistrements et selectionnez en un pour ne pas perdre votre travail.`,
+            timeout: 30*1000,
+        })
+        BasicF.toast({
+            type: "info",
+            svg: "warn",
+            title: "Fermeture automatique",
+            content: `La session va se fermer automatiquement dans ${BasicF.formatTime(datas.secondsBeforeEnd*1000, "hh heures mm minutes et ss secondes")} (à ${BasicF.formatDate(new Date(datas.endTimestamp), "hh:mm:ss")})`,
+            timeout: datas.secondsBeforeEnd*1000,
+            progressBarType: "error"
+        })
+
+        setTimeout(() => {
+            BasicF.toast({
+                type: "info",
+                svg: "warn",
+                title: "Fermeture automatique",
+                content: `La session est terminée.`,
+                timeout: datas.secondsBeforeEnd*1000,
+                progressBarType: "error"
+            })
+        }, datas.secondsBeforeEnd*1000)
+
+        setTimeout(() => {
+            LaboFactice.quit(true)
+        }, datas.secondsBeforeEnd*1000+3000)
+
+
+    })
+
+
     let windowHasFocus = true
 
 
@@ -46,6 +87,7 @@ function _startClient(LaboFactice, startClientDatas) {
         let win = nw.Window.get();
         return {
             computerName: systemOS.hostname(),
+            callTeacher: LaboFactice.isCallingTeacher,
             windowHasFocus: windowHasFocus,
             loginInformations: LaboFactice.getLoginInformations(),
             inSession: LaboFactice.sessionAlreadyStarted,

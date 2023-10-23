@@ -1,3 +1,4 @@
+const { loadavg } = require('os');
 
 
 /*
@@ -38,8 +39,15 @@ function _startServer() {
 }
 
 */
+async function dataURLToBlob(dataURI) {
+    return await (await fetch(dataURI)).blob(); 
+}
+
 
 function _startServer(LaboFactice, datas) {
+
+
+
     /*
 
     datas: {
@@ -80,16 +88,19 @@ function _startServer(LaboFactice, datas) {
     });
 
     httpServer.listen(datas.port, () => {
-        console.log(`[http] Website : localhost:${config.port_http}`)
+        console.log(`[http] Website : localhost:${datas.port}`)
     });
 
+    setInterval(() => {
+        console.log("connectedComputers:",connectedComputers)
+    }, 5000)
 
-    let connectedComputers = {
-        /*"name": {
+    let connectedComputers = [
+        /*{
             socketID: "",
             computerName: systemOS.hostname(),
         }*/
-    }
+    ]
     
     ioHTTP.on('connection', async (socket) => {
         console.log(`[http/socket][+] New socket connected: ${socket.id}`)
@@ -101,7 +112,13 @@ function _startServer(LaboFactice, datas) {
         })
         let socket_id = socket.id
 
-        socket.emit("LaboFactice_loadLesson", datas.lessonDatas)
+        LaboFactice.internal_socket.on("startSession", lessonDatas => {
+            socket.emit("LaboFactice_loadLesson", lessonDatas)
+        })
+
+        if(LaboFactice.currentLessonUUID != undefined) {
+            socket.emit("LaboFactice_loadLesson", LaboFactice.getCurrentLessonDatas())
+        }
 
         socket.on("LaboFactice_connected", (datas) => {
             if(!datas.computerName || typeof datas.windowHasFocus != 'boolean' || typeof datas.loginInformations != 'object' || typeof datas.inSession != 'boolean') {
@@ -113,36 +130,74 @@ function _startServer(LaboFactice, datas) {
                 })
             }
 
-            connectedComputers[datas.computerName] = {
+            connectedComputers = connectedComputers.filter(x => {
+                return (x.socketID != socket.id)
+            })
+
+            connectedComputers.push({
                 socketID: socket.id,
                 computerName: datas.computerName ??  "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
-                /*windowHasFocus: (typeof datas.windowHasFocus == 'boolean' ? datas.windowHasFocus : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                 loginInformations: {
                     logged: (typeof datas.loginInformations.logged == 'boolean' ? datas.loginInformations.logged : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                     firstname: datas.loginInformations.firstname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                     lastname: datas.loginInformations.lastname ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                     birthday: datas.loginInformations.birthday ?? "Error:socketServer.on('LaboFactice_connected'):INVALID_FORM_OR_TYPE",
                 },
+                /*windowHasFocus: (typeof datas.windowHasFocus == 'boolean' ? datas.windowHasFocus : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
+
                 inSession: (typeof datas.inSession == 'boolean' ? datas.inSession : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE"),
                 recordCount: (typeof datas.recordCount == 'number' ? datas.recordCount : "Error:socketServer.on('LaboFactice_connected'):INVALID_OBJECT_TYPE")
                 */
-            }
+            })
             LaboFactice.setConnectedComputers(connectedComputers)
         })
         
 
         socket.on('disconnect', () => {
-            console.log(`[http/socket][-] [${socket_id}] Disconnected.`)
-            BasicF.toast({
-                type: "log",
-                title: "Session socket",
-                content: `[${socket_id}] Disconnected.`,
-                svg: "error"
-            })
+            try {
 
-            connectedComputers = connectedComputers.filter(x => {
-                return
-            })
+                let computerInfos = connectedComputers.filter(x => {
+                    return (x.socketID == socket_id)
+                })[0]
+                
+                console.log(`[http/socket][-] [${socket_id}] Disconnected.`)
+                if(computerInfos.computerName) {
+                    BasicF.toast({
+                        type: "log",
+                        title: `${computerInfos.loginInformations.lastname} ${computerInfos.loginInformations.firstname} s'est déconnecté`,
+                        content: `computerName: ${computerInfos.computerName} | socketID: ${socket_id}`,
+                        svg: "error",
+                        timeout: 30*1000
+                    })
+                } else {
+                    BasicF.toast({
+                        type: "log",
+                        title: `Un ordinateur inconnu s'est déconnecté`,
+                        content:`computerName: ${computerInfos.computerName} | socketID: ${socket_id}`,
+                        svg: "error",
+                        timeout: 30*1000
+                    })
+                }
+    
+                
+                connectedComputers = connectedComputers.filter(x => {
+                    return (x.socketID != socket_id)
+                })
+                LaboFactice.setConnectedComputers(connectedComputers)
+    
+    
+                function sendDisconnected() {
+                    LaboFactice.realTimeUpdate({
+                        computerName: computerInfos.computerName,
+                        isDisconnected: true
+                    })
+                }
+    
+                setTimeout(() => { sendDisconnected() }, 2*1000)
+                setTimeout(() => { sendDisconnected() }, 5*1000)
+            } catch(e) {
+                console.log(e)
+            }
             
         })
         socket.on("test",() => {
@@ -165,11 +220,29 @@ function _startServer(LaboFactice, datas) {
         })
 
 
+        socket.on("LaboFactice_sendMyRecord", async datas => {
+            console.log("LaboFactice_sendMyRecord:", datas)
+
+            let datePrefix = BasicF.formatDate(Date.now(), "YYYYMMDD")            
+
+            let filePath = `${config.defaultSavePath}`.replace("{{USERPROFILE}}", process.env.USERPROFILE) + `${LaboFactice.currentLessonUUID}\\`
+            let fileName = `${datePrefix}_${datas.loginInformations.lastname}_${datas.loginInformations.firstname}`
+            let fileExtension = `.wav`
+
+            fs.mkdir(filePath, { recursive: true }, (err) => {
+                if (err) throw err;
+            });
+
+            fs.writeFileSync((filePath + fileName + fileExtension) ,Buffer.from(await (await dataURLToBlob(datas.record.dataURL)).arrayBuffer(), 'binary').toString("base64"), {encoding: "base64"} )
+        })
+
+
         socket.on("LaboFactice_realTimeDatas", (datas) => {
             //console.log("LaboFactice_realTimeDatas:",datas)
             try {
                 let sanitizedDatas = {
                     computerName: datas.computerName,
+                    callTeacher: datas.callTeacher,
                     windowHasFocus: datas.windowHasFocus,
                     loginInformations: {
                         logged: datas.loginInformations.logged,

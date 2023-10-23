@@ -148,6 +148,9 @@ class the_BasicFunctions {
                 } else {
                     elem.classList.add(className)
                 }
+            },
+            hasClass: (elem, className) => {
+                return elem.classList.contains(className)
             }
         }
     }
@@ -301,7 +304,7 @@ class the_BasicFunctions {
                 "samedi",
                 "dimanche"
             ]
-            return list[la_date.getDay()-1]
+            return list[la_date.getDay()-1 == -1 ? list.length-1 : la_date.getDay()-1]
         }
 
         let return_string = format.replace("YYYY", la_date.getFullYear()).replace("MM", formatThis(la_date.getMonth()+1)).replace("DDDDD", getDayName()).replace("DD", formatThis(la_date.getDate())).replace("hh", formatThis(la_date.getHours())).replace("mm", formatThis(la_date.getMinutes())).replace("ss", formatThis(la_date.getSeconds()))
@@ -374,6 +377,34 @@ class the_BasicFunctions {
             stopDragElement(element)
         }
 
+    }
+
+    createNewEmitter = () => {
+        /**
+         * class Emitter : Créé un object de socket interne où on peut emit et reçevoir des event (évènements)
+         * @version 1.0.0
+         */
+        class Emitter {
+            constructor() {
+                this.eventsNames = {}
+                
+                this.on = (callName, callback_f) => {
+                    if(typeof callback_f != 'function') throw new Error("Callback must must type of 'function'.")
+                    if(this.eventsNames[callName] == undefined) this.eventsNames[callName] = []
+                    this.eventsNames[callName].push(callback_f)
+                }
+                this.emit = (callName, ...datasList) => {
+                    if(this.eventsNames[callName] == undefined) return;
+                    for(let i in this.eventsNames[callName]) {
+                        try { this.eventsNames[callName][i](...datasList) } catch(e) { console.log(e) }
+                    }
+                }
+                this.removeListeners = (callName) => (this.eventsNames[callName] = [])
+                this.removeAllListeners = () => (this.eventsNames = {})
+                this.countListeners = (callName) => (this.eventsNames[callName] != undefined ? this.eventsNames[callName].length : 0)
+            }
+        }
+        return new Emitter()
     }
 
 }

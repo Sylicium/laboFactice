@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./css/basicCss.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/global/toasting.css">
+    <link rel="shortcut icon" href="/application/LaboFacticeLogo.ico">
 </head>
 
 <body>
@@ -63,7 +64,7 @@
 
             <div class="bandeau" style="display:flex;flex-direction: row;align-items: center;">
                 <h1 class="title" style="margin:0;margin-left: 20px;font-family: cursive;">LaboFactice</h1>
-                <button id="callTeacherButton" class="bcss-b-simple-warn callTeacher" style="margin: auto;" onclick="LaboFactice.callTeacher()">Appeller le professeur</button>
+                <button id="application_button_callTeacher" class="bcss-b-simple callTeacher" style="margin: auto;" onclick="LaboFactice.toggleCallTeacher()">Appeller le professeur</button>
                 <button class="bcss-b-simple-danger" onclick="LaboFactice.quit()">Quitter</button>
             </div>
             <div class="app">

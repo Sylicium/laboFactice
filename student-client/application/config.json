@@ -1,5 +1,8 @@
 {
-    "adminPassword":"prof",
+    "adminPassword": "prof",
+    "note_exemple": false,
+    "note": "Après avoir configuré l'application, assurez vous de changer la valeur ci dessous de 'true' à 'false', sans aucun guillement tel que l'exemple au dessus, afin d'éviter un message d'erreur récurrent.",
+    "configHasBeenReload": false,
     "bonjourService": {
         "port": 7890,
         "type": "LaboFacticeLanServiceName"
